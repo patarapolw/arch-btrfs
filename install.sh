@@ -122,7 +122,7 @@ cat << EOF >> /mnt/@/.snapshots/1/info.xml
 <snapshot>
   <type>single</type>
   <num>1</num>
-  <date>1999-03-31 0:00:00</date>
+  <date>2021-01-01 0:00:00</date>
   <description>First Root Filesystem</description>
   <cleanup>number</cleanup>
 </snapshot>
@@ -155,7 +155,7 @@ kernel_selector
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
+pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."
