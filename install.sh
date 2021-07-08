@@ -49,8 +49,8 @@ read -r -p "This will delete the current partition table on $DISK. Do you agree 
 response=${response,,}
 if [[ "$response" =~ ^(yes|y)$ ]]
 then
-    wipefs -af "$DISK" &>/dev/null
-    sgdisk -Zo "$DISK" &>/dev/null
+    wipefs -af "$DISK"
+    sgdisk -Zo "$DISK"
 else
     echo "Quitting."
     exit
@@ -73,7 +73,7 @@ partprobe "$DISK"
 
 # Formatting the ESP as FAT32.
 echo "Formatting the EFI Partition as FAT32."
-mkfs.fat -F 32 $ESP &>/dev/null
+mkfs.fat -F 32 $ESP
 
 # Creating a LUKS Container for the root partition.
 echo "Creating LUKS Container for the root partition."
@@ -84,27 +84,27 @@ BTRFS="/dev/mapper/cryptroot"
 
 # Formatting the LUKS Container as BTRFS.
 echo "Formatting the LUKS container as BTRFS."
-mkfs.btrfs $BTRFS &>/dev/null
+mkfs.btrfs $BTRFS
 mount $BTRFS /mnt
 
 # Creating BTRFS subvolumes.
 echo "Creating BTRFS subvolumes."
-btrfs subvolume create /mnt/@ &>/dev/null
-btrfs subvolume create /mnt/@/.snapshots &>/dev/null
-mkdir -p /mnt/@/.snapshots/1 &>/dev/null
-btrfs subvolume create /mnt/@/.snapshots/1/snapshot &>/dev/null
-btrfs subvolume create /mnt/@/boot/ &>/dev/null
-btrfs subvolume create /mnt/@/home &>/dev/null
-btrfs subvolume create /mnt/@/root &>/dev/null
-btrfs subvolume create /mnt/@/srv &>/dev/null
-btrfs subvolume create /mnt/@/var_log &>/dev/null
-btrfs subvolume create /mnt/@/var_crash &>/dev/null
-btrfs subvolume create /mnt/@/var_cache &>/dev/null
-btrfs subvolume create /mnt/@/var_tmp &>/dev/null
-btrfs subvolume create /mnt/@/var_spool &>/dev/null
-btrfs subvolume create /mnt/@/var_lib_libvirt_images &>/dev/null
-btrfs subvolume create /mnt/@/var_lib_machines &>/dev/null
-btrfs subvolume create /mnt/@/cryptkey &>/dev/null
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@/.snapshots
+mkdir -p /mnt/@/.snapshots/1
+btrfs subvolume create /mnt/@/.snapshots/1/snapshot
+btrfs subvolume create /mnt/@/boot/
+btrfs subvolume create /mnt/@/home
+btrfs subvolume create /mnt/@/root
+btrfs subvolume create /mnt/@/srv
+btrfs subvolume create /mnt/@/var_log
+btrfs subvolume create /mnt/@/var_crash
+btrfs subvolume create /mnt/@/var_cache
+btrfs subvolume create /mnt/@/var_tmp
+btrfs subvolume create /mnt/@/var_spool
+btrfs subvolume create /mnt/@/var_lib_libvirt_images
+btrfs subvolume create /mnt/@/var_lib_machines
+btrfs subvolume create /mnt/@/cryptkey
 chattr +C /mnt/@/boot
 chattr +C /mnt/@/srv
 chattr +C /mnt/@/var_log
@@ -155,11 +155,13 @@ kernel_selector
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor pipewire pipewire-pulse pipewire-alsa pipewire-jack nano gnome-shell gdm gnome-control-center gnome-terminal gnome-software gnome-software-packagekit-plugin gnome-tweaks nautilus flatpak xdg-user-dirs firewalld exfatprogs ntfs-3g f2fs-tools udftools adobe-source-han-sans-otc-fonts adobe-source-han-serif-otc-fonts reflector snap-pac
+pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."
 genfstab -U /mnt >> /mnt/etc/fstab
+
+# TODO: get the right subvolid
 sed -i 's#,subvolid=258,subvol=/@/.snapshots/1/snapshot,subvol=@/.snapshots/1/snapshot##g' /mnt/etc/fstab
 
 # Setting hostname.
@@ -198,8 +200,8 @@ sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/10_linux
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/20_linux_xen
 
 # Adding keyfile to the initramfs to avoid double password.
-dd bs=512 count=4 if=/dev/random of=/mnt/cryptkey/.root.key iflag=fullblock &>/dev/null
-chmod 000 /mnt/cryptkey/.root.key &>/dev/null
+dd bs=512 count=4 if=/dev/random of=/mnt/cryptkey/.root.key iflag=fullblock
+chmod 000 /mnt/cryptkey/.root.key
 cryptsetup -v luksAddKey /dev/disk/by-partlabel/cryptroot /mnt/cryptkey/.root.key
 sed -i "s#quiet#cryptdevice=UUID=$UUID:cryptroot root=$BTRFS lsm=lockdown,yama,apparmor,bpf cryptkey=rootfs:/cryptkey/.root.key#g" /mnt/etc/default/grub
 sed -i 's#FILES=()#FILES=(/cryptkey/.root.key)#g' /mnt/etc/mkinitcpio.conf
@@ -240,19 +242,19 @@ chmod 600 /mnt/etc/NetworkManager/conf.d/20-connectivity.conf
 arch-chroot /mnt /bin/bash -e <<EOF
     
     # Setting up timezone.
-    ln -sf /usr/share/zoneinfo/$(curl -s http://ip-api.com/line?fields=timezone) /etc/localtime &>/dev/null
+    ln -sf /usr/share/zoneinfo/$(curl -s http://ip-api.com/line?fields=timezone) /etc/localtime
     
     # Setting up clock.
     hwclock --systohc
     
     # Generating locales.
     echo "Generating locales."
-    locale-gen &>/dev/null
+    locale-gen
     
     # Generating a new initramfs.
     echo "Creating a new initramfs."
-    chmod 600 /boot/initramfs-linux* &>/dev/null
-    mkinitcpio -P &>/dev/null
+    chmod 600 /boot/initramfs-linux*
+    mkinitcpio -P
 
     # Snapper configuration
     umount /.snapshots
@@ -265,11 +267,11 @@ arch-chroot /mnt /bin/bash -e <<EOF
 
     # Installing GRUB.
     echo "Installing GRUB on /boot."
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gtp cryptodisk luks gcry_rijndael gcry_sha256 btrfs" --disable-shim-lock &>/dev/null
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt cryptodisk luks gcry_rijndael gcry_sha256 btrfs" --disable-shim-lock
     
     # Creating grub config file.
     echo "Creating GRUB config file."
-    grub-mkconfig -o /boot/grub/grub.cfg &>/dev/null
+    grub-mkconfig -o /boot/grub/grub.cfg
 
 EOF
 
@@ -278,35 +280,35 @@ echo "Setting root password."
 arch-chroot /mnt /bin/passwd
 
 # Enabling auto-trimming service.
-systemctl enable fstrim.timer --root=/mnt &>/dev/null
+systemctl enable fstrim.timer --root=/mnt
 
 # Enabling NetworkManager service.
 echo "Enabling NetworkManager"
-systemctl enable NetworkManager --root=/mnt &>/dev/null
+systemctl enable NetworkManager --root=/mnt
 
 # Enabling GDM.
-systemctl enable gdm --root=/mnt &>/dev/null
+systemctl enable gdm --root=/mnt
 
 # Enabling AppArmor.
 echo "Enabling AppArmor."
-systemctl enable apparmor --root=/mnt &>/dev/null
+systemctl enable apparmor --root=/mnt
 
 # Enabling Firewalld.
 echo "Enabling Firewalld."
-systemctl enable firewalld --root=/mnt &>/dev/null
+systemctl enable firewalld --root=/mnt
 
 # Enabling Bluetooth Service (If you don't want bluetooth, disable it with GNOME, don't disable the service).
-systemctl enable bluetooth --root=/mnt &>/dev/null
+systemctl enable bluetooth --root=/mnt
 
 # Enabling Reflector timer.
 echo "Enabling Reflector."
-systemctl enable reflector.timer --root=/mnt &>/dev/null
+systemctl enable reflector.timer --root=/mnt
 
 # Enabling Snapper automatic snapshots.
 echo "Enabling Snapper and automatic snapshots entries."
-systemctl enable snapper-timeline.timer --root=/mnt &>/dev/null
-systemctl enable snapper-cleanup.timer --root=/mnt &>/dev/null
-systemctl enable grub-btrfs.path --root=/mnt &>/dev/null
+systemctl enable snapper-timeline.timer --root=/mnt
+systemctl enable snapper-cleanup.timer --root=/mnt
+systemctl enable grub-btrfs.path --root=/mnt
 
 # Setting umask to 077.
 sed -i 's/022/077/g' /mnt/etc/profile
