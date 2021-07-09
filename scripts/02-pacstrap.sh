@@ -75,8 +75,8 @@ EOF
 # Configuring /etc/mkinitcpio.conf
 echo "Configuring /etc/mkinitcpio for ZSTD compression and LUKS hook."
 sed -i 's,#COMPRESSION="zstd",COMPRESSION="zstd",g' /mnt/etc/mkinitcpio.conf
-# sed -i 's,modconf block filesystems keyboard,keyboard modconf block encrypt filesystems grub-btrfs-overlayfs,g' /mnt/etc/mkinitcpio.conf
-sed -i 's,modconf block filesystems keyboard,keyboard modconf block filesystems grub-btrfs-overlayfs,g' /mnt/etc/mkinitcpio.conf
+# sed -i 's,modconf block filesystems keyboard,keyboard modconf block encrypt filesystems,g' /mnt/etc/mkinitcpio.conf
+sed -i 's,modconf block filesystems keyboard,keyboard modconf block filesystems,g' /mnt/etc/mkinitcpio.conf
 
 # Enabling LUKS in GRUB and setting the UUID of the LUKS container.
 # UUID=$(blkid $cryptroot | cut -f2 -d'"')
