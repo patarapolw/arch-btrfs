@@ -19,7 +19,7 @@ do
     mkdir -p /mnt/$vol
 done
 
-for vol in boot root srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/machines cryptkey
+for vol in boot root srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker cryptkey
 do
     btrfs subvolume create /mnt/@/${vol//\//_}
     chattr +C /mnt/@/${vol//\//_}
@@ -31,11 +31,11 @@ btrfs subvolume set-default "$(btrfs subvolume list /mnt | grep "@/.snapshots/1/
 cat << EOF >> /mnt/@/.snapshots/1/info.xml
 <?xml version="1.0"?>
 <snapshot>
-  <type>single</type>
-  <num>1</num>
-  <date>2021-01-01 0:00:00</date>
-  <description>First Root Filesystem</description>
-  <cleanup>number</cleanup>
+    <type>single</type>
+    <num>1</num>
+    <date>2021-01-01 0:00:00</date>
+    <description>First Root Filesystem</description>
+    <cleanup>number</cleanup>
 </snapshot>
 EOF
 

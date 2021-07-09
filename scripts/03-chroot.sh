@@ -57,3 +57,6 @@ read -r -p "Please choose an admin user to create: " USER
 echo "Creating user $USER"
 arch-chroot /mnt /bin/bash -e "useradd -m -g wheel $USER"
 arch-chroot /mnt /bin/bash -e "passwd $USER"
+
+sed -i 's/# %wheel/%wheel/' /mnt/etc/sudoers
+arch-chroot /mnt /bin/visudo -c
