@@ -19,7 +19,7 @@ do
     mkdir -p /mnt/$vol
 done
 
-for vol in boot root srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker cryptkey
+for vol in boot root srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers cryptkey
 do
     btrfs subvolume create /mnt/@/${vol//\//_}
     chattr +C /mnt/@/${vol//\//_}
@@ -52,7 +52,7 @@ do
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
 
-for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/machines cryptkey
+for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers cryptkey
 do
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done

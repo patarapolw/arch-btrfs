@@ -5,7 +5,7 @@ read -r -p "Please choose an admin user: " USER
 export AUR="yay"
 
 arch-chroot /mnt /bin/bash -e <<EOF
-    sudo $USER
+    su $USER
     mkdir -p ~/.local/opt
 
     cd ~/.local/opt
