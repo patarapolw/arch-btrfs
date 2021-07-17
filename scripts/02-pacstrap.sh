@@ -42,10 +42,11 @@ pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-fir
 echo "Generating a new fstab."
 genfstab -U /mnt >> /mnt/etc/fstab
 
-echo "
-# TODO: get the right subvolid
-sed -i 's#,subvolid=258,subvol=/@/.snapshots/1/snapshot,subvol=@/.snapshots/1/snapshot##g' /mnt/etc/fstab
-"
+sed -i '/subvol=\/@\/.snapshots\/1\/snapshot/s/,subvol.+?(,)?//g' /mnt/etc/fstab
+
+# echo "
+# sed -i 's#,subvolid=258,subvol=/@/.snapshots/1/snapshot,subvol=@/.snapshots/1/snapshot##g' /mnt/etc/fstab
+# "
 
 read -n 1 -p 'Please edit /etc/fstab manually'
 
@@ -84,9 +85,12 @@ sed -i 's,#COMPRESSION="zstd",COMPRESSION="zstd",g' /mnt/etc/mkinitcpio.conf
 echo "" >> /mnt/etc/default/grub
 echo -e "# Booting with BTRFS subvolume\nGRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION=true" >> /mnt/etc/default/grub
 
-sed -i 's# part_msdos##g' /mnt/etc/default/grub
+#sed -i 's# part_msdos##g' /mnt/etc/default/grub
 
-sed -i 's/GRUB_DISABLE_RECOVERY=false/GRUB_DISABLE_RECOVERY=true/g' /mnt/etc/default/grub
+# This is required for enabling AppArmor.
+sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ lsm=lockdown,yama,apparmor"/g' /mnt/etc/default/grub
+
+sed -i 's/GRUB_DISABLE_RECOVERY=/s/false/true/g' /mnt/etc/default/grub
 
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/10_linux
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/20_linux_xen
