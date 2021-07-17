@@ -58,8 +58,4 @@ The partition layout I use allows us to replicate the behavior found in openSUSE
 | 12                  | @/var_spool                  | /var/spool               | Encrypted BTRFS (nodatacow) |
 | 13                  | @/var_lib_libvirt_images     | /var/lib/libvirt/images  | Encrypted BTRFS (nodatacow) |
 | 14                  | @/var_lib_docker             | /var/lib/docker          | Encrypted BTRFS (nodatacow) |
-| 15                  | @/cryptkey                   | /cryptkey                | Encrypted BTRFS (nodatacow) |
-
-## To do
-
-No, it is not yet full automated. (See [/scripts/02-pacstrap.sh#L46](/scripts/02-pacstrap.sh#L46).) I need to somehow automate subvolid discovery...
+| 15                  | @/var_lib_machines           | /var/lib/machines        | Encrypted BTRFS (nodatacow) |
