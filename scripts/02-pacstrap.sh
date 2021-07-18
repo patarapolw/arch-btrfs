@@ -36,17 +36,26 @@ kernel_selector
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git go
+pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${kernel}-firmware ${microcode} grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git go zsh
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."
 genfstab -U /mnt >> /mnt/etc/fstab
 
 sed -i -E '/subvol=\/@\/.snapshots\/1\/snapshot/s/,subvol.+/ 0 0/g' /mnt/etc/fstab
+mount -a /mnt
 
 # Setting hostname.
 read -r -p "Please enter the hostname: " hostname
 echo "$hostname" > /mnt/etc/hostname
+
+# Setting hosts file.
+echo "Setting hosts file."
+cat >> /mnt/etc/hosts <<EOF
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   $hostname.localdomain   $hostname
+EOF
 
 # Setting up locales.
 read -r -p "Please insert the locale you use in this format (xx_XX): " locale
@@ -56,14 +65,6 @@ echo "LANG=$locale.UTF-8" > /mnt/etc/locale.conf
 # Setting up keyboard layout.
 # read -r -p "Please insert the keyboard layout you use: " kblayout
 # echo "KEYMAP=$kblayout" > /mnt/etc/vconsole.conf
-
-# Setting hosts file.
-echo "Setting hosts file."
-cat >> /mnt/etc/hosts <<EOF
-127.0.0.1   localhost
-::1         localhost
-127.0.1.1   $hostname.localdomain   $hostname
-EOF
 
 # Configuring /etc/mkinitcpio.conf
 echo "Configuring /etc/mkinitcpio for ZSTD compression and LUKS hook."
