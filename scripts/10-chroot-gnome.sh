@@ -1,7 +1,7 @@
 #!/bin/bash
 #/usr/bin/arch-chroot /mnt
 
-pacman -S plasma kde-applications
+pacman -S gnome
 
-systemctl enable sddm
+systemctl enable gdm
 systemctl enable bluetooth

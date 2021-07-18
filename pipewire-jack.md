@@ -6,3 +6,5 @@ yay -S pipewire-jack-dropin
 ```
 
 And some of the soundfonts setup in qsynth, to point to `/usr/share/soundfonts`.
+
+This is tested on real hardware, in KDE.
