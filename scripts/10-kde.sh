@@ -1,8 +1,7 @@
 #!/bin/bash
+#/usr/bin/arch-chroot /mnt
 
-arch-chroot /mnt /bin/bash -e <<EOF
-    pacman -S plasma kde-applications
+pacman -S plasma kde-applications
 
-    systemctl enable sddm
-    systemctl enable bluetooth
-EOF
+systemctl enable sddm
+systemctl enable bluetooth

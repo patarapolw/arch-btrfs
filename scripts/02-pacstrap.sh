@@ -36,21 +36,13 @@ kernel_selector
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git
+pacstrap /mnt base base-devel ${kernel} ${kernel}-headers ${microcode} linux-firmware grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reiserfsprogs reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git go
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."
 genfstab -U /mnt >> /mnt/etc/fstab
 
-sed -i '/subvol=\/@\/.snapshots\/1\/snapshot/s/,subvol.+?(,)?//g' /mnt/etc/fstab
-
-# echo "
-# sed -i 's#,subvolid=258,subvol=/@/.snapshots/1/snapshot,subvol=@/.snapshots/1/snapshot##g' /mnt/etc/fstab
-# "
-
-read -n 1 -p 'Please edit /etc/fstab manually'
-
-nano /mnt/etc/fstab
+sed -i -E '/subvol=\/@\/.snapshots\/1\/snapshot/s/,subvol.+/ 0 0/g' /mnt/etc/fstab
 
 # Setting hostname.
 read -r -p "Please enter the hostname: " hostname
@@ -67,7 +59,7 @@ echo "LANG=$locale.UTF-8" > /mnt/etc/locale.conf
 
 # Setting hosts file.
 echo "Setting hosts file."
-cat > /mnt/etc/hosts <<EOF
+cat >> /mnt/etc/hosts <<EOF
 127.0.0.1   localhost
 ::1         localhost
 127.0.1.1   $hostname.localdomain   $hostname
@@ -75,7 +67,7 @@ EOF
 
 # Configuring /etc/mkinitcpio.conf
 echo "Configuring /etc/mkinitcpio for ZSTD compression and LUKS hook."
-sed -i 's,#COMPRESSION="zstd",COMPRESSION="zstd",g' /mnt/etc/mkinitcpio.conf
+sed -i '/COMPRESSION="zstd"/s/^#//g' /mnt/etc/mkinitcpio.conf
 # sed -i 's,modconf block filesystems keyboard,keyboard modconf block encrypt filesystems,g' /mnt/etc/mkinitcpio.conf
 
 # Enabling LUKS in GRUB and setting the UUID of the LUKS container.
@@ -90,7 +82,7 @@ echo -e "# Booting with BTRFS subvolume\nGRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETE
 # This is required for enabling AppArmor.
 sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ lsm=lockdown,yama,apparmor"/g' /mnt/etc/default/grub
 
-sed -i 's/GRUB_DISABLE_RECOVERY=/s/false/true/g' /mnt/etc/default/grub
+sed -i '/GRUB_DISABLE_RECOVERY=/s/false/true/g' /mnt/etc/default/grub
 
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/10_linux
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/20_linux_xen
