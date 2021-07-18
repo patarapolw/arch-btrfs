@@ -1,4 +1,5 @@
-#!/usr/bin/arch-chroot /mnt
+#!/bin/bash
+#/usr/bin/arch-chroot /mnt
 
 read -r -p "Please choose an admin user: " USER
 
