@@ -1,5 +1,6 @@
 #!/bin/bash
 
+lsblk
 read -r -p "Please choose the partition to format to BTRFS: " BTRFS
 
 mkfs.btrfs -L ARCH $BTRFS
@@ -53,7 +54,7 @@ do
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
 
-for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers cryptkey
+for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers
 do
     mkdir -p /mnt/$vol
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol

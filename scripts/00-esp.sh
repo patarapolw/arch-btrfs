@@ -11,4 +11,4 @@ parted $PART -- mkpart primary 512MiB 100%
 lsblk
 
 read -r -p "Please choose the partition to format to EFI partition: " EFI
-mkfs.fat -L EFI $EFI
+mkfs.vfat $EFI

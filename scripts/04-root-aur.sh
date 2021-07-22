@@ -5,7 +5,7 @@ read -r -p "Please choose an admin user: " USER
 
 export AUR="yay"
 
-su $USER -c "
+su $USER -c -i "
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
     mkdir -p ~/.local/opt
@@ -13,5 +13,5 @@ su $USER -c "
     cd ~/.local/opt
     git clone --depth=1 https://aur.archlinux.org/$AUR.git
     cd $AUR
-    makepkg -si --noconfirm
+    makepkg -si
 "
