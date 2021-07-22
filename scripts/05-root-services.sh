@@ -1,37 +1,38 @@
 #!/bin/bash
+#/usr/bin/arch-chroot /mnt
 
 # Enabling auto-trimming service.
-systemctl enable fstrim.timer --root=/mnt
+systemctl enable fstrim.timer
 
 # Enabling NetworkManager service.
 echo "Enabling NetworkManager"
-systemctl enable NetworkManager --root=/mnt
+systemctl enable NetworkManager
 
 # Enabling AppArmor.
 echo "Enabling AppArmor."
-systemctl enable apparmor --root=/mnt
+systemctl enable apparmor
 
 # Enabling Firewalld.
 echo "Enabling Firewalld."
-systemctl enable firewalld --root=/mnt
+systemctl enable firewalld
 
 # Enabling Bluetooth Service (If you don't want bluetooth, disable it with GNOME, don't disable the service).
-# systemctl enable bluetooth --root=/mnt
+# systemctl enable bluetooth
 
 # Enabling Reflector timer.
 echo "Enabling Reflector."
-systemctl enable reflector.timer --root=/mnt
+systemctl enable reflector.timer
 
 # Enabling Snapper automatic snapshots.
 echo "Enabling Snapper and automatic snapshots entries."
-systemctl enable snapper-timeline.timer --root=/mnt
-systemctl enable snapper-cleanup.timer --root=/mnt
-systemctl enable grub-btrfs.path --root=/mnt
+systemctl enable snapper-timeline.timer
+systemctl enable snapper-cleanup.timer
+systemctl enable grub-btrfs.path
 
 # # Setting umask to 077.
-# sed -i 's/022/077/g' /mnt/etc/profile
-# echo "" >> /mnt/etc/bash.bashrc
-# echo "umask 077" >> /mnt/etc/bash.bashrc
+# sed -i 's/022/077/g' /etc/profile
+# echo "" >> /etc/bash.bashrc
+# echo "umask 077" >> /etc/bash.bashrc
 
-# #Blacklist Firewire SBP2.
-# echo "blacklist firewire-sbp2" | sudo tee /mnt/etc/modprobe.d/blacklist.conf
+#Blacklist Firewire SBP2.
+echo "blacklist firewire-sbp2" | sudo tee /etc/modprobe.d/blacklist.conf
