@@ -2,7 +2,7 @@
 
 read -r -p "Please choose the partition to format to BTRFS: " BTRFS
 
-mkfs.btrfs $BTRFS
+mkfs.btrfs -L ARCH $BTRFS
 # mkfs.btrfs -f $BTRFS
 mount $BTRFS /mnt
 
@@ -19,7 +19,7 @@ do
     mkdir -p /mnt/$vol
 done
 
-for vol in boot srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers cryptkey
+for vol in boot srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers
 do
     btrfs subvolume create /mnt/@/${vol//\//_}
     chattr +C /mnt/@/${vol//\//_}

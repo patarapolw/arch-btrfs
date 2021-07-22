@@ -13,5 +13,5 @@ su $USER -c "
     cd ~/.local/opt
     git clone --depth=1 https://aur.archlinux.org/$AUR.git
     cd $AUR
-    makepkg -si
+    makepkg -si --noconfirm
 "
