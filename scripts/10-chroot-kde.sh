@@ -7,5 +7,7 @@ systemctl enable sddm
 systemctl enable bluetooth
 
 cp -r /usr/lib/sddm/sddm.conf.d /etc/
-# sed -i -E '/Current=/s/Current=.*$/Current=breeze/s' /etc/sddm.conf.d/default.conf
-./10-toml-editor.py --set='Current=breeze' --header='[Theme]' /etc/sddm.conf.d/default.conf > /etc/sddm.conf.d/default.conf
+
+export FILE=/etc/sddm.conf.d/default.conf
+HEADER='[Theme]' SET='Current=elarun' ./10-toml-editor.sh > $FILE.new
+mv $FILE.new $FILE
