@@ -54,6 +54,7 @@ passwd $USER
 
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 echo 'Defaults lecture=always' >> /etc/sudoers
+# echo 'Defaults timestamp_timeout=0' >> /etc/sudoers
 visudo -c
 
 sed -i '/Color/s/^#//' /etc/pacman.conf
