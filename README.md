@@ -11,10 +11,11 @@ This fork focuses on editing, in order to create a system that suits your needs.
 1. Download an Arch Linux ISO from [here](https://archlinux.org/download/)
 2. Flash the ISO onto an [USB Flash Drive](https://wiki.archlinux.org/index.php/USB_flash_installation_medium).
 3. Boot the live environment.
-4. Connect to the internet. (You may need to `rfkill unblock wifi` - see my updates to Arch Installtion Guide. ([How to Install Arch Linux, with desktop environment (KDE, Xfce)](https://www.polv.cc/post/2021/04/installing-arch-desktop-environment)))
+4. Connect to the internet. (You may need to `rfkill unblock wifi`.)
 5. `pacman -Sy git && git clone --depth=1 https://github.com/patarapolw/arch-btrfs/`
 6. `cd arch-btrfs/scripts && ls`
 7. Run the `*.sh` one by one, according to your needs.
+8. You may have to `git clone` again, after `arch-chroot`.
 
 ## Snapper behavior
 
