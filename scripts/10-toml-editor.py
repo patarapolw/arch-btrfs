@@ -4,9 +4,9 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--set', '-s', help='K=V')
-parser.add_argument('--header', '-H', help='Enclosed in [*]')
-parser.add_argument('filename')
+parser.add_argument('--set', '-s', help='K=V', required=True)
+parser.add_argument('--header', '-H', help='Enclosed in [*]', required=True)
+parser.add_argument('filename', nargs=1)
 
 args = parser.parse_args()
 
