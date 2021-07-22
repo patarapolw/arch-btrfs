@@ -67,7 +67,7 @@ echo "LANG=$locale.UTF-8" > /mnt/etc/locale.conf
 # echo "KEYMAP=$kblayout" > /mnt/etc/vconsole.conf
 
 # Configuring /etc/mkinitcpio.conf
-echo "Configuring /etc/mkinitcpio for ZSTD compression and LUKS hook."
+echo "Configuring /etc/mkinitcpio for ZSTD compression."
 sed -i '/COMPRESSION="zstd"/s/^#//g' /mnt/etc/mkinitcpio.conf
 # sed -i 's,modconf block filesystems keyboard,keyboard modconf block encrypt filesystems,g' /mnt/etc/mkinitcpio.conf
 
