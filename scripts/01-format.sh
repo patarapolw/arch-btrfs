@@ -54,7 +54,13 @@ do
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
 
-for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers
+# If you plan to use `snapper -c home create-config /home`, consider adding these, but use a full path for $HOME (i.e. home/$USER)
+# - $HOME/.cache
+# - $HOME/.var
+# - $HOME/Downloads
+# - $HOME/.local/share/Steam
+# - $HOME/.local/share/containers
+for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/containers
 do
     mkdir -p /mnt/$vol
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
