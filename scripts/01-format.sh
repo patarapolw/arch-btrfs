@@ -60,6 +60,10 @@ done
 # - $HOME/Downloads
 # - $HOME/.local/share/Steam
 # - $HOME/.local/share/containers
+# - $HOME/.local/share/Trash
+#
+# As for how to rollback, see https://github.com/openSUSE/snapper/issues/664
+#
 for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/containers
 do
     mkdir -p /mnt/$vol

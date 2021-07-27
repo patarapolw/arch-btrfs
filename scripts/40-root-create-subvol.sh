@@ -5,7 +5,7 @@
 
 USER=polv
 BTRFS=/dev/sda5
-FOLDER="/home/polv/.var"
+FOLDER="/home/polv/.local/share/Trash"
 N_FIRST=5
 N_CURRENT=$(btrfs sub get-default / | grep -oP '(?<=ID )[0-9]+')
 
