@@ -1,8 +1,8 @@
 #!/bin/bash
 
-TZ=Asia/Bangkok
-BOOTLOADER_ID=ArchSafe
-BOOT_TARGET=/dev/sdb
+# TZ=Asia/Bangkok
+BOOTLOADER_ID=Arch
+# BOOT_TARGET=/dev/sdb
 IS_ENCRYPT=1
 
 if [ -z "$TZ" ]; then

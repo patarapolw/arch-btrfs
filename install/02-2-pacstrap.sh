@@ -3,7 +3,7 @@
 kernel=
 microcode=
 hostname=
-locale=
+# locale=en_US
 kblayout=
 # LC_MONETARY=  # "en_US.UTF-8 UTF-8"
 
@@ -50,9 +50,12 @@ if [ -z "$kernel" ]; then
     esac
 fi
 
+# Optional. Pacman mirror fixing
+# reflect --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel ${kernel} ${kernel}-firmware ${microcode} grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g  reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git go zsh
+pacstrap /mnt base base-devel ${kernel} ${kernel}-firmware ${microcode} grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g  reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git zsh
 
 echo "Installing curl, which is needed in some of the steps."
 pacman -Sy curl
