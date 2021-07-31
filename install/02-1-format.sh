@@ -2,7 +2,7 @@
 
 # lsblk
 
-BTRFS=
+BTRFS=  # real partition, or /dev/mapper/cryptroot
 ESP=
 
 if [ ! -z "$BTRFS" ]; then
