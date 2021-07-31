@@ -1,7 +1,34 @@
 #!/bin/bash
 
-# Selecting the kernel flavor to install. 
-kernel_selector () {
+kernel=
+microcode=
+hostname=
+locale=
+kblayout=
+# LC_MONETARY=  # "en_US.UTF-8 UTF-8"
+
+if [ ! -z "$hostname" ]; then
+    read -r -p "Please enter the hostname: " hostname
+fi
+
+if [ ! -z "$locale" ]; then
+    read -r -p "Please insert the locale you use in this format (xx_XX): " locale
+fi
+
+
+if [ ! -z "$microcode" ]; then
+    # Checking the microcode to install.
+    CPU=$(grep vendor_id /proc/cpuinfo)
+    if [[ $CPU == *"AuthenticAMD"* ]]
+    then
+        microcode=amd-ucode
+    else
+        microcode=intel-ucode
+    fi
+fi
+
+if [ ! -z "$kernel" ]; then
+    # Selecting the kernel flavor to install. 
     echo "List of kernels:"
     echo "1) Stable — Vanilla Linux kernel and modules, with a few patches applied."
     echo "2) Hardened — A security-focused Linux kernel."
@@ -21,18 +48,7 @@ kernel_selector () {
         * ) echo "You did not enter a valid selection."
             kernel_selector
     esac
-}
-
-# Checking the microcode to install.
-CPU=$(grep vendor_id /proc/cpuinfo)
-if [[ $CPU == *"AuthenticAMD"* ]]
-then
-    microcode=amd-ucode
-else
-    microcode=intel-ucode
 fi
-
-kernel_selector
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
@@ -46,7 +62,6 @@ sed -i -E '/subvol=\/@\/.snapshots\/1\/snapshot/s/,subvol.+/ 0 0/g' /mnt/etc/fst
 mount -a /mnt
 
 # Setting hostname.
-read -r -p "Please enter the hostname: " hostname
 echo "$hostname" >> /mnt/etc/hostname
 
 # Setting hosts file.
@@ -58,17 +73,17 @@ cat >> /mnt/etc/hosts <<EOF
 EOF
 
 # Setting up locales.
-read -r -p "Please insert the locale you use in this format (xx_XX): " locale
 echo "$locale.UTF-8 UTF-8"  >> /mnt/etc/locale.gen
 echo "LANG=$locale.UTF-8" >> /mnt/etc/locale.conf
 
-## Force US dollar
-# echo "en_US.UTF-8 UTF-8"  >> /mnt/etc/locale.gen
-# echo "LC_MONETARY=en_US.UTF-8" >> /mnt/etc/locale.conf
+if [ -z "$LC_MONETARY" ]; then
+    echo "$LC_MONETARY"  >> /mnt/etc/locale.gen
+    echo "LC_MONETARY=${LC_MONETARY// .*$//}" >> /mnt/etc/locale.conf
+fi
 
-# Setting up keyboard layout.
-# read -r -p "Please insert the keyboard layout you use: " kblayout
-# echo "KEYMAP=$kblayout" > /mnt/etc/vconsole.conf
+if [ -z "$kblayout" ]; then
+    echo "KEYMAP=$kblayout" > /mnt/etc/vconsole.conf
+fi
 
 # Configuring /etc/mkinitcpio.conf
 echo "Configuring /etc/mkinitcpio for ZSTD compression."

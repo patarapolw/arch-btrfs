@@ -1,7 +1,17 @@
 #!/bin/bash
 
-lsblk
-read -r -p "Please choose the partition to format to BTRFS: " BTRFS
+# lsblk
+
+BTRFS=
+ESP=
+
+if [ ! -z "$BTRFS" ]; then
+    read -r -p "Please choose the partition to format to BTRFS: " BTRFS
+fi
+
+if [ ! -z "$ESP" ] then
+    read -r -p "Please choose the EFI partition: " ESP
+fi
 
 mkfs.btrfs -L ARCH $BTRFS
 # mkfs.btrfs -f $BTRFS
@@ -61,8 +71,6 @@ do
     mkdir -p /mnt/$vol
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
-
-read -r -p "Please choose the EFI partition: " ESP
 
 mkdir -p /mnt/boot/efi
 mount $ESP /mnt/boot/efi

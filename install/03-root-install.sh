@@ -1,8 +1,13 @@
 #!/bin/bash
-#/usr/bin/arch-chroot /mnt
+
+# TZ=
+
+if [ ! -z "$TZ" ]; then
+    TZ=$(curl -s http://ip-api.com/line?fields=timezone)
+fi
 
 # Setting up timezone.
-ln -sf /usr/share/zoneinfo/$(curl -s http://ip-api.com/line?fields=timezone) /etc/localtime
+ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
 
 # Setting up clock.
 hwclock --systohc
@@ -20,7 +25,7 @@ mkinitcpio -P
 umount /.snapshots
 rm -r /.snapshots
 snapper --no-dbus -c root create-config /
-# snapper --no-dbus -c home create-config /home
+snapper --no-dbus -c home create-config /home
 btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a

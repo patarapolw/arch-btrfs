@@ -5,9 +5,34 @@
 
 # Please confirm that @/ subvolid is 5.
 
-USER=polv
-BTRFS=/dev/sda5
-FOLDER="/home/$USER/.local/share/Trash"
+# USER=
+BTRFS=$(df -T / | grep btrfs | tail -n 1 | cut -d" " -f1)
+FOLDER=
+
+if [ ! -z "$BTRFS" ]; then
+    exit 1
+fi
+
+if [ ! -z "$FOLDER" ]; then
+    read -r -p "Please enter folder path: " FOLDER
+fi
+
+if [ ! -z "$USER" ]; then
+    USER=root
+fi
+
+if [ FOLDER[1] = "~" ]; then
+    if [ USER = "root" ]; then
+        FOLDER="/root${FOLDER:1}"
+    else
+        if [ ! -z "$USER" ]; then
+            read -r -p "Please enter username: " USER
+        fi
+
+        FOLDER="/home/${USER}${FOLDER:1}"
+        USER=$(echo $FOLDER | cut -d"/" -f2)
+    fi
+fi
 
 MNT="${FOLDER:1}"
 MNT="${MNT//\//_}"

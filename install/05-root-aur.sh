@@ -1,8 +1,14 @@
 #!/bin/bash
 #/usr/bin/arch-chroot /mnt
 
-read -r -p "Please choose an admin user to install AUR helper, yay: " USER
-export AUR="yay"
+# USER=
+AUR=yay
+
+if [ ! -z "$USER" ] then;
+    read -r -p "Please choose an admin user to install AUR helper, yay: " USER
+fi
+
+export AUR
 
 su -l $USER <<EOF
     cd /tmp
