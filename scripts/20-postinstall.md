@@ -1,8 +1,7 @@
-After rebooting into the OS, please test
+After rebooting into the OS, you can test
 
 ```sh
-sudo snapper rollback
-sudo reboot
 sudo snapper list
 sudo snapper rollback $n
+sudo reboot
 ```

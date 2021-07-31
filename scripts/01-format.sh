@@ -20,7 +20,9 @@ do
     mkdir -p /mnt/$vol
 done
 
-for vol in boot srv var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/machines var/lib/containers
+VAR_VOLS=(var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/containers)
+
+for vol in boot srv ${VAR_VOLS[*]}
 do
     btrfs subvolume create /mnt/@/${vol//\//_}
     chattr +C /mnt/@/${vol//\//_}
@@ -64,7 +66,7 @@ done
 #
 # As for how to rollback, see https://github.com/openSUSE/snapper/issues/664
 #
-for vol in var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/containers
+for vol in $VAR_VOLS
 do
     mkdir -p /mnt/$vol
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
