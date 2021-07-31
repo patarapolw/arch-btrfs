@@ -1,5 +1,4 @@
 #!/bin/bash
-#/usr/bin/arch-chroot /mnt
 
 pacman -S plasma konsole dolphin
 

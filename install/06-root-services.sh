@@ -1,5 +1,4 @@
 #!/bin/bash
-#/usr/bin/arch-chroot /mnt
 
 # Enabling auto-trimming service.
 systemctl enable fstrim.timer
@@ -23,16 +22,17 @@ systemctl enable firewalld
 echo "Enabling Reflector."
 systemctl enable reflector.timer
 
+# Enabling systemd-oomd.
+echo "Enabling systemd-oomd."
+systemctl enable systemd-oomd
+
 # Enabling Snapper automatic snapshots.
 echo "Enabling Snapper and automatic snapshots entries."
 systemctl enable snapper-timeline.timer
 systemctl enable snapper-cleanup.timer
 systemctl enable grub-btrfs.path
 
-# # Setting umask to 077.
-# sed -i 's/022/077/g' /etc/profile
-# echo "" >> /etc/bash.bashrc
-# echo "umask 077" >> /etc/bash.bashrc
-
-#Blacklist Firewire SBP2.
-echo "blacklist firewire-sbp2" | sudo tee /etc/modprobe.d/blacklist.conf
+# Setting umask to 077.
+sed -i 's/022/077/g' /etc/profile
+echo "" >> /etc/bash.bashrc
+echo "umask 077" >> /etc/bash.bashrc

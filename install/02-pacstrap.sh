@@ -86,62 +86,61 @@ if [ -z "$kblayout" ]; then
 fi
 
 # Configuring /etc/mkinitcpio.conf
-echo "Configuring /etc/mkinitcpio for ZSTD compression."
 sed -i '/COMPRESSION="zstd"/s/^#//g' /mnt/etc/mkinitcpio.conf
-# sed -i 's,modconf block filesystems keyboard,keyboard modconf block encrypt filesystems,g' /mnt/etc/mkinitcpio.conf
-
-# Enabling LUKS in GRUB and setting the UUID of the LUKS container.
-# UUID=$(blkid $cryptroot | cut -f2 -d'"')
-# sed -i 's/#\(GRUB_ENABLE_CRYPTODISK=y\)/\1/' /mnt/etc/default/grub
 
 echo "" >> /mnt/etc/default/grub
 echo -e "# Booting with BTRFS subvolume\nGRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION=true" >> /mnt/etc/default/grub
 
-#sed -i 's# part_msdos##g' /mnt/etc/default/grub
-
-# This is required for enabling AppArmor.
-sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ lsm=lockdown,yama,apparmor"/g' /mnt/etc/default/grub
-
+sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ lsm=lockdown,yama,apparmor,bpf"/g' /mnt/etc/default/grub
 sed -i '/GRUB_DISABLE_RECOVERY=/s/false/true/g' /mnt/etc/default/grub
 
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/10_linux
 sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/20_linux_xen
 
-# # Adding keyfile to the initramfs to avoid double password.
-# dd bs=512 count=4 if=/dev/random of=/mnt/cryptkey/.root.key iflag=fullblock
-# chmod 000 /mnt/cryptkey/.root.key
-# cryptsetup -v luksAddKey /dev/disk/by-partlabel/cryptroot /mnt/cryptkey/.root.key
-# sed -i "s#quiet#cryptdevice=UUID=$UUID:cryptroot root=$BTRFS lsm=lockdown,yama,apparmor,bpf cryptkey=rootfs:/cryptkey/.root.key#g" /mnt/etc/default/grub
-# sed -i 's#FILES=()#FILES=(/cryptkey/.root.key)#g' /mnt/etc/mkinitcpio.conf
+# Enabling CPU Mitigations
+curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/default/grub.d/40_cpu_mitigations.cfg >> /mnt/etc/grub.d/40_cpu_mitigations
 
-# # Security kernel settings.
-# echo "kernel.kptr_restrict = 2" > /mnt/etc/sysctl.d/51-kptr-restrict.conf
-# echo "kernel.kexec_load_disabled = 1" > /mnt/etc/sysctl.d/51-kexec-restrict.conf
-# cat << EOF >> /mnt/etc/sysctl.d/10-security.conf
-# fs.protected_hardlinks = 1
-# fs.protected_symlinks = 1
-# net.core.bpf_jit_harden = 2
-# kernel.yama.ptrace_scope = 3
-# kernel.unprivileged_userns_clone = 1
-# EOF
+# Distrusting the CPU
+curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/default/grub.d/40_distrust_cpu.cfg >> /mnt/etc/grub.d/40_distrust_cpu
 
-# # Randomize Mac Address.
-# bash -c 'cat > /mnt/etc/NetworkManager/conf.d/00-macrandomize.conf' <<-'EOF'
-# [device]
-# wifi.scan-rand-mac-address=yes
-# [connection]
-# wifi.cloned-mac-address=random
-# ethernet.cloned-mac-address=random
-# connection.stable-id=${CONNECTION}/${BOOT}
-# EOF
+# Enabling IOMMU
+curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/default/grub.d/40_enable_iommu.cfg >> /mnt/etc/grub.d/40_enable_iommu
 
-# chmod 600 /mnt/etc/NetworkManager/conf.d/00-macrandomize.conf
+# Setting GRUB configuration file permissions
+chmod 755 /mnt/etc/grub.d/*
 
-# # Disable Connectivity Check.
-# bash -c 'cat > /mnt/etc/NetworkManager/conf.d/20-connectivity.conf' <<-'EOF'
-# [connectivity]
-# uri=http://www.archlinux.org/check_network_status.txt
-# interval=0
-# EOF
+# Blacklisting kernel modules
+curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/modprobe.d/30_security-misc.conf >> /mnt/etc/modprobe.d/30_security-misc.conf
+chmod 600 /mnt/etc/modprobe.d/*
 
-# chmod 600 /mnt/etc/NetworkManager/conf.d/20-connectivity.conf
+# Security kernel settings.
+curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/sysctl.d/30_security-misc.conf >> /mnt/etc/sysctl.d/30_security-misc.conf
+sed -i 's/kernel.yama.ptrace_scope=2/kernel.yama.ptrace_scope=3/g' /mnt/etc/sysctl.d/30_security-misc.conf
+curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/sysctl.d/30_silent-kernel-printk.conf >> /mnt/etc/sysctl.d/30_silent-kernel-printk.conf
+chmod 600 /mnt/etc/sysctl.d/*
+
+# IO udev rules
+curl https://gitlab.com/garuda-linux/themes-and-settings/settings/garuda-common-settings/-/raw/master/etc/udev/rules.d/50-sata.rules > /mnt/etc/udev/rules.d/50-sata.rules
+curl https://gitlab.com/garuda-linux/themes-and-settings/settings/garuda-common-settings/-/raw/master/etc/udev/rules.d/60-ioschedulers.rules > /etc/udev/rules.d/60-ioschedulers.rules
+chmod 600 /mnt/etc/udev/rules.d/*
+
+# Randomize Mac Address.
+bash -c 'cat > /mnt/etc/NetworkManager/conf.d/00-macrandomize.conf' <<-'EOF'
+[device]
+wifi.scan-rand-mac-address=yes
+[connection]
+wifi.cloned-mac-address=random
+ethernet.cloned-mac-address=random
+connection.stable-id=${CONNECTION}/${BOOT}
+EOF
+
+chmod 600 /mnt/etc/NetworkManager/conf.d/00-macrandomize.conf
+
+# Disable Connectivity Check.
+bash -c 'cat > /mnt/etc/NetworkManager/conf.d/20-connectivity.conf' <<-'EOF'
+[connectivity]
+uri=http://www.archlinux.org/check_network_status.txt
+interval=0
+EOF
+
+chmod 600 /mnt/etc/NetworkManager/conf.d/20-connectivity.conf

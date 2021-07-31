@@ -1,5 +1,4 @@
 #!/bin/bash
-#/usr/bin/arch-chroot /mnt
 
 pacman -S lxqt sddm xorg connman slock alsa-lib libpulse libstatgrab libsysstat lm_sensors bluez
 yay -S lxqt-connman-applet

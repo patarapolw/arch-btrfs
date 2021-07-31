@@ -1,5 +1,4 @@
 #!/bin/bash
-#/usr/bin/arch-chroot /mnt
 
 echo 'zram' > /etc/modules-load.d/zram.conf
 echo 'options zram num_devices=1' > /etc/modprobe.d/zram.conf

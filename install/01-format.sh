@@ -14,7 +14,6 @@ if [ ! -z "$ESP" ] then
 fi
 
 mkfs.btrfs -L ARCH $BTRFS
-# mkfs.btrfs -f $BTRFS
 mount $BTRFS /mnt
 
 echo "Creating BTRFS subvolumes."
@@ -32,7 +31,7 @@ done
 
 VAR_VOLS=(var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/containers)
 
-for vol in boot srv ${VAR_VOLS[*]}
+for vol in boot srv cryptkey ${VAR_VOLS[*]}
 do
     btrfs subvolume create /mnt/@/${vol//\//_}
     chattr +C /mnt/@/${vol//\//_}
@@ -66,7 +65,7 @@ do
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
 
-for vol in $VAR_VOLS
+for vol in cryptkey ${VAR_VOLS[*]}
 do
     mkdir -p /mnt/$vol
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
