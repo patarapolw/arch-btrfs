@@ -45,13 +45,6 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "Setting root password"
 passwd
 
-read -r -p "Please choose an admin user to create: " USER
-
-# Create user
-echo "Creating user $USER"
-useradd -m -g wheel -s /bin/zsh $USER
-passwd $USER
-
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 echo 'Defaults lecture=always' >> /etc/sudoers
 # echo 'Defaults timestamp_timeout=0' >> /etc/sudoers

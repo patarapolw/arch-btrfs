@@ -13,7 +13,7 @@ This fork focuses on editing, in order to create a system that suits your needs.
 3. Boot the live environment.
 4. Connect to the internet. (You may need to `rfkill unblock wifi`.)
 5. `pacman -Sy git && git clone --depth=1 https://github.com/patarapolw/arch-btrfs/`
-6. `cd arch-btrfs/scripts && ls`
+6. `cd arch-btrfs/install && ls`
 7. Run the `*.sh` one by one, according to your needs.
 8. You may have to `git clone` again, after `arch-chroot`.
 
@@ -37,7 +37,7 @@ The partition layout I use allows us to replicate the behavior found in openSUSE
 6. Desktop environment by your choice. I've experiment all of GNOME, KDE and XFCE.
 7. Added more filesystem support (Since Disk Utility is a GNOME dependency and it supports exFAT, NTFS, F2FS, ReiserFS and UDF, I added support for those out of the box to make the experience a bit better out of the box. Actually, Disk Utility is helpful for KDE too (especially for ISO mounting and managing `/etc/fstab`).)
 8. ~~Randomize Mac Address and disable Connectivity Check for privacy~~
-9. ~~Blacklisted Firewire SBP2 (As recommended by https://www.ncsc.gov.uk/collection/end-user-device-security/platform-specific-guidance/ubuntu-18-04-lts)~~
+9. Blacklisted Firewire SBP2 (As recommended by https://www.ncsc.gov.uk/collection/end-user-device-security/platform-specific-guidance/ubuntu-18-04-lts)
 10. Kernel choice and security settings
 11. Post-install instructions, and how to create subvol later.
 

@@ -56,16 +56,6 @@ do
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
 
-# If you plan to use `snapper -c home create-config /home`, consider adding these, but use a full path for $HOME (i.e. home/$USER)
-# - $HOME/.cache
-# - $HOME/.var
-# - $HOME/Downloads
-# - $HOME/.local/share/Steam
-# - $HOME/.local/share/containers
-# - $HOME/.local/share/Trash
-#
-# As for how to rollback, see https://github.com/openSUSE/snapper/issues/664
-#
 for vol in $VAR_VOLS
 do
     mkdir -p /mnt/$vol

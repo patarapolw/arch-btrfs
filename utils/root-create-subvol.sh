@@ -7,7 +7,7 @@
 
 USER=polv
 BTRFS=/dev/sda5
-FOLDER="/home/polv/.local/share/Trash"
+FOLDER="/home/$USER/.local/share/Trash"
 
 MNT="${FOLDER:1}"
 MNT="${MNT//\//_}"
