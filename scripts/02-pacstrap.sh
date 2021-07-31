@@ -61,7 +61,10 @@ EOF
 read -r -p "Please insert the locale you use in this format (xx_XX): " locale
 echo "$locale.UTF-8 UTF-8"  >> /mnt/etc/locale.gen
 echo "LANG=$locale.UTF-8" >> /mnt/etc/locale.conf
-# echo "LC_MONETARY=en_US.UTF-8" >> /mnt/etc/locale.conf # Force USD
+
+## Force US dollar
+# echo "en_US.UTF-8 UTF-8"  >> /mnt/etc/locale.gen
+# echo "LC_MONETARY=en_US.UTF-8" >> /mnt/etc/locale.conf
 
 # Setting up keyboard layout.
 # read -r -p "Please insert the keyboard layout you use: " kblayout
