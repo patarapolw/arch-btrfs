@@ -7,16 +7,16 @@ locale=
 kblayout=
 # LC_MONETARY=  # "en_US.UTF-8 UTF-8"
 
-if [ ! -z "$hostname" ]; then
+if [ -z "$hostname" ]; then
     read -r -p "Please enter the hostname: " hostname
 fi
 
-if [ ! -z "$locale" ]; then
+if [ -z "$locale" ]; then
     read -r -p "Please insert the locale you use in this format (xx_XX): " locale
 fi
 
 
-if [ ! -z "$microcode" ]; then
+if [ -z "$microcode" ]; then
     # Checking the microcode to install.
     CPU=$(grep vendor_id /proc/cpuinfo)
     if [[ $CPU == *"AuthenticAMD"* ]]
@@ -27,7 +27,7 @@ if [ ! -z "$microcode" ]; then
     fi
 fi
 
-if [ ! -z "$kernel" ]; then
+if [ -z "$kernel" ]; then
     # Selecting the kernel flavor to install. 
     echo "List of kernels:"
     echo "1) Stable — Vanilla Linux kernel and modules, with a few patches applied."

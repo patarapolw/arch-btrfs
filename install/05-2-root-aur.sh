@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# USER=
+USER=polv
 AUR=yay
 
-if [ ! -z "$USER" ] then;
+if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to install AUR helper, yay: " USER
 fi
 
@@ -15,7 +15,7 @@ su -l $USER <<EOF
     cd $AUR
     makepkg -si
 
-    echo 'Installing oh-my-zsh'
-    read -n 1
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    touch ~/.zshrc
+    #echo 'Installing oh-my-zsh'
+    #sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 EOF

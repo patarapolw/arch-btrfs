@@ -5,11 +5,11 @@
 BTRFS=  # real partition, or /dev/mapper/cryptroot
 ESP=
 
-if [ ! -z "$BTRFS" ]; then
+if [ -z "$BTRFS" ]; then
     read -r -p "Please choose the partition to format to BTRFS: " BTRFS
 fi
 
-if [ ! -z "$ESP" ] then
+if [ -z "$ESP" ]; then
     read -r -p "Please choose the EFI partition: " ESP
 fi
 

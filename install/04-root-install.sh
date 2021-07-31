@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# TZ=
+TZ=Asia/Bangkok
+BOOTLOADER_ID=ArchSafe
+BOOT_TARGET=/dev/sdb
+IS_ENCRYPT=1
 
-if [ ! -z "$TZ" ]; then
+if [ -z "$TZ" ]; then
     TZ=$(curl -s http://ip-api.com/line?fields=timezone)
 fi
 
@@ -31,16 +34,22 @@ mkdir /.snapshots
 mount -a
 chmod 750 /.snapshots
 
-read -r -p "Please choose a bootloader-id: " BOOTLOADER_ID
-read -r -p "Please choose target: " TARGET
+if [ -z "$BOOTLOADER_ID" ]; then
+    read -r -p "Please choose a bootloader-id: " BOOTLOADER_ID
+fi
 
-# # Installing GRUB.
-# echo "Installing GRUB on /boot."
-# grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt cryptodisk luks gcry_rijndael gcry_sha256 btrfs" --disable-shim-lock
+if [ -z "$BOOT_TARGET" ]; then
+    read -r -p "Please choose target: " BOOT_TARGET
+fi
 
 # Installing GRUB.
 echo "Installing GRUB on /boot."
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt btrfs" --disable-shim-lock $TARGET
+
+if [ IS_ENCRYPT = "1" ]; then
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt cryptodisk luks gcry_rijndael gcry_sha256 btrfs" --disable-shim-lock $BOOT_TARGET
+else
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt btrfs" --disable-shim-lock $BOOT_TARGET
+fi
 
 # Creating grub config file.
 echo "Creating GRUB config file."
@@ -57,5 +66,6 @@ visudo -c
 
 sed -i '/Color/s/^#//' /etc/pacman.conf
 
+echo 'set linenumbers' >> /etc/nanorc
 echo 'set softwrap' >> /etc/nanorc
 echo 'include "/usr/share/nano/*.nanorc"' >> /etc/nanorc

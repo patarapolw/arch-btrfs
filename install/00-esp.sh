@@ -5,7 +5,7 @@
 PART=
 # PART=/dev/vda
 
-if [ ! -z "$PART" ]; then
+if [ -z "$PART" ]; then
     read -r -p "Please choose the partition name: " PART
 fi
 
