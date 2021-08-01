@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is my fork of [Arch-Setup-Script](https://github.com/tommytran732/Arch-Setup-Script), a collection of **scripts** made in order to boostrap a basic **Arch Linux** environment with **automated snapshots** with Snapper, recommended **security** measures, and **encryption** with LUKS.
+This is my fork of [Arch-Setup-Script](https://github.com/tommytran732/Arch-Setup-Script), a collection of **scripts** made in order to boostrap a basic **Arch Linux** environment with **automated snapshots** with Snapper, recommended **security** measures, and optional **encryption** with LUKS.
 
 This fork focuses on editing, in order to create a system that suits your needs. (Feel free to fork and edit the repo; before cloning to the installation media.)
 
@@ -33,7 +33,7 @@ The partition layout I use allows us to replicate the behavior found in openSUSE
 1. Separated scripts. Aimed to be editable and customizable.
 2. Encryption is optional. Simply skip `./install/*-encrypt.sh`
 3. Desktop environment by your choice. I've experiment all of GNOME, KDE, XFCE and LXQt.
-4. Added more filesystem support (Since Disk Utility is a GNOME dependency and it supports exFAT, NTFS, F2FS, ReiserFS and UDF, I added support for those out of the box to make the experience a bit better out of the box. Actually, Disk Utility is helpful for KDE too (especially for ISO mounting and managing `/etc/fstab`).)
+4. Home folder snapshots. However, this is experimental and might not be perfect. As well as, you cannot rollback home folder directly. (See https://github.com/openSUSE/snapper/issues/664)
 5.  Post-installation utilities and how-tos.
 
 ### Partitions layout 
