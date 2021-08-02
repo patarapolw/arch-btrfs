@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO: doesn't revert to Secure Boot Enabled on my machine.
+exit 1
+
 GRUB_INST=/usr/local/bin/my-grub-install.sh
 GRUB_UPDATE=/usr/local/bin/my-grub-update.sh
 
