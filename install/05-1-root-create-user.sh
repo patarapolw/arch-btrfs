@@ -1,13 +1,13 @@
 #!/bin/bash
 
 USER=polv
-BTRFS=/dev/mapper/cryptroot
+BTRFS=/dev/sda5
 
 if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to create: " USER
 fi
 
-UUID=$(blkid $BTRFS | grep -oP '(?<=UUID=")([^"]+)')
+UUID=$(blkid $BTRFS | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)
 
 # Create user
 useradd -m -g wheel -s /bin/zsh $USER
@@ -19,11 +19,10 @@ passwd $USER
 # - $HOME/Downloads
 # - $HOME/.local/share/Steam
 # - $HOME/.local/share/containers
-# - $HOME/.local/share/Trash
 #
 # As for how to rollback, see https://github.com/openSUSE/snapper/issues/664
 #
-NOSNAPSHOT_PATHS=(".cache" ".var" ".local/share/Steam" ".local/share/containers" ".local/share/Trash")
+NOSNAPSHOT_PATHS=(".cache" ".var" ".local/share/Steam" ".local/share/containers")
 mount $BTRFS -o subvolid=5 /mnt
 
 for vol in ${NOSNAPSHOT_PATHS[*]}
@@ -31,6 +30,7 @@ do
     vol=home/$USER/$vol
     mnt=${vol//\//_}
     mkdir -p /$vol
+    chown $USER /$vol
     btrfs sub cr /mnt/@/$mnt
     chattr +C /mnt/@/$mnt
     chown $USER /mnt/@/$mnt
