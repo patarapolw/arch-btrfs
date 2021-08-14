@@ -82,12 +82,12 @@ EOF
 echo "$locale.UTF-8 UTF-8"  >> /mnt/etc/locale.gen
 echo "LANG=$locale.UTF-8" >> /mnt/etc/locale.conf
 
-if [ -z "$LC_MONETARY" ]; then
+if [ ! -z "$LC_MONETARY" ]; then
     echo "$LC_MONETARY"  >> /mnt/etc/locale.gen
     echo "LC_MONETARY=${LC_MONETARY// .*$//}" >> /mnt/etc/locale.conf
 fi
 
-if [ -z "$kblayout" ]; then
+if [ ! -z "$kblayout" ]; then
     echo "KEYMAP=$kblayout" > /mnt/etc/vconsole.conf
 fi
 
