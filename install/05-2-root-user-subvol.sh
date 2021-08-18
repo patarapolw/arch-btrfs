@@ -13,20 +13,6 @@ fi
 
 UUID=$(blkid "$BTRFS" | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)
 
-# Create user
-useradd -m -g wheel -s /bin/zsh "$USER"
-passwd "$USER"
-
-# If you plan to use `snapper -c home create-config /home`, consider adding these.
-# - $HOME/.cache
-# - $HOME/.var
-# - $HOME/Downloads
-# - $HOME/.local/share/Steam
-# - $HOME/.local/share/containers
-#
-# As for how to rollback, see https://github.com/openSUSE/snapper/issues/664
-#
-
 COW_PATHS=(
     ".var"
     "Downloads"
@@ -65,6 +51,7 @@ do
     fi
 
     chown $USER "/mnt/@/$mnt"
+    rsync -axX "/$vol/" "/mnt/@/$mnt/"
 
     printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@/$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@/%s,discard=async\t0\t0\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
 done
