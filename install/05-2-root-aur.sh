@@ -9,7 +9,7 @@ fi
 
 export AUR
 
-su -l $USER <<EOF
+su - "$USER" <<EOF
     cd /tmp
     git clone --depth=1 https://aur.archlinux.org/$AUR.git
     cd $AUR

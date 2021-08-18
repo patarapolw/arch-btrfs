@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # TZ=Asia/Bangkok
-BOOTLOADER_ID=Arch
+BOOTLOADER_ID=ARCH
 # BOOT_TARGET=/dev/sdb
 IS_ENCRYPT=1
 
 if [ -z "$TZ" ]; then
-    TZ=$(curl -s http://ip-api.com/line?fields=timezone)
+    TZ="$(curl -s http://ip-api.com/line?fields=timezone)"
 fi
 
 # Setting up timezone.
-ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
+ln -sf "/usr/share/zoneinfo/$TZ" /etc/localtime
 
 # Setting up clock.
 hwclock --systohc
@@ -45,10 +45,12 @@ fi
 # Installing GRUB.
 echo "Installing GRUB on /boot."
 
+GRUB_MODULES="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt btrfs"
+
 if [ IS_ENCRYPT = "1" ]; then
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt cryptodisk luks gcry_rijndael gcry_sha256 btrfs" --disable-shim-lock $BOOT_TARGET
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="$BOOTLOADER_ID" --modules="${GRUB_MODULES// btrfs$/ cryptodisk luks gcry_rijndael gcry_sha256 btrfs}" --disable-shim-lock "$BOOT_TARGET"
 else
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile gzio part_gpt btrfs" --disable-shim-lock $BOOT_TARGET
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="$BOOTLOADER_ID" --modules="$GRUB_MODULES" --disable-shim-lock "$BOOT_TARGET"
 fi
 
 # Creating grub config file.

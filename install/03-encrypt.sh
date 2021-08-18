@@ -11,7 +11,7 @@ fi
 sed -i '/HOOKS=(/s/)/ encrypt)/' /mnt/etc/mkinitcpio.conf
 
 # Enabling LUKS in GRUB and setting the UUID of the LUKS container.
-UUID=$(blkid $CONTAINER | grep -oP '(?<=UUID=")([^"]+)')
+UUID="$(blkid $CONTAINER | grep -oP '(?<=UUID=")([^"]+)')"
 
 # Adding keyfile to the initramfs to avoid double password.
 dd bs=512 count=4 if=/dev/random of=/mnt/cryptkey/.root.key iflag=fullblock

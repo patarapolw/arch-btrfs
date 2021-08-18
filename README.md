@@ -42,16 +42,33 @@ The partition layout I use allows us to replicate the behavior found in openSUSE
 |---------------------|------------------------------|--------------------------|-----------------------------|
 | 1                   | ESP                          | /boot/efi                | Unencrypted FAT32           |
 | 2                   | @/.snapshots/X/snapshot      | /                        | Encrypted BTRFS             |
-| 3                   | @/boot                       | /boot/                   | Encrypted BTRFS (nodatacow) |
+| 3                   | @/boot                       | /boot/                   | Encrypted BTRFS             |
 | 4                   | @/root                       | /root                    | Encrypted BTRFS             |
 | 5                   | @/home                       | /home                    | Encrypted BTRFS             |
 | 6                   | @/.snapshots                 | /.snapshots              | Encrypted BTRFS             |
-| 7                   | @/srv                        | /srv                     | Encrypted BTRFS (nodatacow) |
-| 8                   | @/var_log                    | /var/log                 | Encrypted BTRFS (nodatacow) |
-| 9                   | @/var_crash                  | /var/crash               | Encrypted BTRFS (nodatacow) |
+| 7                   | @/srv                        | /srv                     | Encrypted BTRFS             |
+| 8                   | @/var_log                    | /var/log                 | Encrypted BTRFS             |
+| 9                   | @/var_crash                  | /var/crash               | Encrypted BTRFS             |
 | 10                  | @/var_cache                  | /var/cache               | Encrypted BTRFS (nodatacow) |
 | 11                  | @/var_tmp                    | /var/tmp                 | Encrypted BTRFS (nodatacow) |
-| 12                  | @/var_spool                  | /var/spool               | Encrypted BTRFS (nodatacow) |
+| 12                  | @/var_spool                  | /var/spool               | Encrypted BTRFS             |
 | 13                  | @/var_lib_libvirt_images     | /var/lib/libvirt/images  | Encrypted BTRFS (nodatacow) |
-| 14                  | @/var_lib_docker             | /var/lib/docker          | Encrypted BTRFS (nodatacow) |
-| 15                  | @/var_lib_containers         | /var/lib/containers      | Encrypted BTRFS (nodatacow) |
+| 14                  | @/var_lib_docker             | /var/lib/docker          | Encrypted BTRFS             |
+| 15                  | @/var_lib_containers         | /var/lib/containers      | Encrypted BTRFS             |
+
+Also, these subfolders in `$HOME` (`~/xxx`) will be subvolumed, to enable `$HOME` snapshoting.
+
+```sh
+COW_PATHS=(
+    ".var"
+    "Downloads"
+    ".local/share/Steam"
+    ".local/share/containers"
+    # ".local/share/Trash"
+)
+
+NOCOW_PATHS=(
+    ".cache"
+    "VirtualBox VMs"
+)
+```

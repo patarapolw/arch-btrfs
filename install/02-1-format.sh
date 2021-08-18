@@ -13,8 +13,8 @@ if [ -z "$ESP" ]; then
     read -r -p "Please choose the EFI partition: " ESP
 fi
 
-mkfs.btrfs -L ARCH $BTRFS
-mount $BTRFS /mnt
+mkfs.btrfs -L ARCH "$BTRFS"
+mount "$BTRFS" /mnt
 
 echo "Creating BTRFS subvolumes."
 
@@ -34,11 +34,11 @@ elem_in() {
 
 for vol in "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
 do
-    btrfs subvolume create /mnt/@/${vol//\//_}
-    mkdir -p /mnt/$vol
+    btrfs subvolume create "/mnt/@/${vol//\//_}"
+    mkdir -p "/mnt/$vol"
 
     if elem_in "$vol" "${NOCOW_VOLS[@]}"; then
-        chattr +C /mnt/@/${vol//\//_}
+        chattr +C "/mnt/@/${vol//\//_}"
     fi
 done
 
@@ -61,12 +61,12 @@ umount /mnt
 
 echo "Mounting the newly created subvolumes."
 
-mount -o ssd,noatime,space_cache,compress=zstd:15 $BTRFS /mnt
+mount -o ssd,noatime,space_cache,compress=zstd:15 "$BTRFS" /mnt
 
 for vol in .snapshots "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
 do
-    mkdir -p /mnt/$vol
-    mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
+    mkdir -p "/mnt/$vol"
+    mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_}" "$BTRFS" "/mnt/$vol"
 done
 
 mkdir -p /mnt/boot/efi

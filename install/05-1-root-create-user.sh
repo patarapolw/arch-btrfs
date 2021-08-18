@@ -7,11 +7,11 @@ if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to create: " USER
 fi
 
-UUID=$(blkid $BTRFS | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)
+UUID=$(blkid "$BTRFS" | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)
 
 # Create user
-useradd -m -g wheel -s /bin/zsh $USER
-passwd $USER
+useradd -m -g wheel -s /bin/zsh "$USER"
+passwd "$USER"
 
 # If you plan to use `snapper -c home create-config /home`, consider adding these.
 # - $HOME/.cache
@@ -28,7 +28,7 @@ COW_PATHS=(
     "Downloads"
     ".local/share/Steam"
     ".local/share/containers"
-    ".local/share/Trash"
+    # ".local/share/Trash"
 )
 
 NOCOW_PATHS=(
