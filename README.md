@@ -82,6 +82,8 @@ NOCOW_PATHS=(
 )
 ```
 
-## Testing in VM (virt-manager / qemu)
+## Testing in VM
 
-As far as I have tested, UEFI needs to be enabled. Also, installing `spice-vdagent` is helpful.
+### virt-manager / qemu
+
+As far as I have tested, UEFI needs to be enabled. Also, installing `spice-vdagent` is helpful, but may not work in some DE's.

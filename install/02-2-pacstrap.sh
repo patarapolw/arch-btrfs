@@ -55,7 +55,7 @@ fi
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel "${kernel}" "${kernel}-firmware" "${microcode}" grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git rsync zsh zsh-completions bash-completions
+pacstrap /mnt base base-devel "${kernel}" "${kernel}-firmware" "${microcode}" grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git rsync zsh zsh-completions
 
 echo "Installing curl, which is needed in some of the steps."
 pacman -Sy curl

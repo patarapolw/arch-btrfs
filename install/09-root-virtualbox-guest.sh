@@ -1,4 +1,12 @@
 #!/bin/bash
 
+USER=
+
 pacman -S virtualbox-guest-utils
-# pacman -S xf86-video-qxl  # installing this crashes Plasma and LightDM
+
+if [ -z "$USER" ]; then
+    read -r -p "Please choose a user to allow folder sharing in VirtualBox: " USER
+fi
+
+usermod -aG vboxsf $USER
+systemctl enable vboxservice

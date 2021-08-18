@@ -21,7 +21,7 @@ paru -Syu \
     visual-studio-code-bin \
     bitwarden-bin \
     chromium \
-    gnome-disk-utility \
+    gnome-disk-utility gnome-keyring \
     discord steam playonlinux \
     onlyoffice-bin \
     python-pip \
