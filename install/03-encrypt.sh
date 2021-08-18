@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# cryptroot=/dev/mapper/cryptroot
-CONTAINER=
+CONTAINER=  # /dev/vda2 or /dev/sda2
 
 if [ -z "$CONTAINER" ]; then
     read -r -p "Please choose the LUKS partition: " BTRFS

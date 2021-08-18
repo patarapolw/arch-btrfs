@@ -1,7 +1,7 @@
 #!/bin/bash
 
-USER=polv
-AUR=paru
+USER=
+AUR=paru    # You can also use yay
 
 if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to install AUR helper, $AUR: " USER

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-kernel=
-microcode=
-hostname=
-# locale=en_US
-kblayout=
-# LC_MONETARY=  # "en_US.UTF-8 UTF-8"
+kernel=         # linux
+microcode=      # amd-ucode or intel-ucode
+hostname=       # any random makeup names
+# locale=en_US  # uncomment this, if you want en_US; or en_GB is nice for metric units
+kblayout=   # Can be omitted
+# LC_MONETARY=  # "en_US.UTF-8 UTF-8"   # Override en_GB to en_US here, for US dollar
 
 if [ -z "$hostname" ]; then
     read -r -p "Please enter the hostname: " hostname

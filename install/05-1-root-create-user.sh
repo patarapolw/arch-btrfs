@@ -1,10 +1,14 @@
 #!/bin/bash
 
-USER=polv
-BTRFS=/dev/sda5
+USER=
+BTRFS=      # /dev/sda2 or /dev/vda2
 
 if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to create: " USER
+fi
+
+if [ -z "$BTRFS" ]; then
+    read -r -p "Please choose BTRFS partiion: " BTRFS
 fi
 
 UUID=$(blkid "$BTRFS" | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)

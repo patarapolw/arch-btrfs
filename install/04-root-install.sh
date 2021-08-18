@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# TZ=Asia/Bangkok
+TZ=                 # Asia/Bangkok for me. You can search with tab completion in /usr/share/zoneinfo
 BOOTLOADER_ID=ARCH
-# BOOT_TARGET=/dev/sdb
-IS_ENCRYPT=1
+BOOT_TARGET=        # /dev/sda or /dev/sda
+# IS_ENCRYPT=1      # If you need encryption modules to be installed for GRUB
 
 if [ -z "$TZ" ]; then
     TZ="$(curl -s http://ip-api.com/line?fields=timezone)"

@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# fdisk -l
-
-PART=
-# PART=/dev/vda
+PART=  # /dev/vda for qemu
 
 if [ -z "$PART" ]; then
     read -r -p "Please choose the partition name: " PART

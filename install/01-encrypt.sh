@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CRYPTROOT=
+CRYPTROOT=  # /dev/vda2 for qemu
 
 if [ -z "$CRYPTROOT" ]; then
     read -n -p "Please choose a partition to be formatted to LUKS: " CRYPTROOT

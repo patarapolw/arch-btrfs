@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# lsblk
-
-BTRFS=  # real partition, or /dev/mapper/cryptroot
-ESP=
+BTRFS=  # real partition e.g. /dev/vda2, /dev/sda2, or /dev/mapper/cryptroot
+ESP=    # /dev/vda1, /dev/sda1
 
 if [ -z "$BTRFS" ]; then
     read -r -p "Please choose the partition to format to BTRFS: " BTRFS
