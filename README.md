@@ -87,3 +87,7 @@ NOCOW_PATHS=(
 ### virt-manager / qemu
 
 As far as I have tested, UEFI needs to be enabled. Also, installing `spice-vdagent` is helpful, but may not work in some DE's.
+
+### VirtualBox
+
+Of course you can use VirtualBox guest addition ISO, but you will also need to `systemctl enable vboxservice`.
