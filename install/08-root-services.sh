@@ -15,9 +15,6 @@ systemctl enable apparmor
 echo "Enabling Firewalld."
 systemctl enable firewalld
 
-# Enabling Bluetooth Service (If you don't want bluetooth, disable it with GNOME, don't disable the service).
-# systemctl enable bluetooth
-
 # Enabling Reflector timer.
 echo "Enabling Reflector."
 systemctl enable reflector.timer
