@@ -1,10 +1,12 @@
-# Arch Linux BTRFS scripts
+# Arch Linux BTRFS installation and utility scripts
 
 ## Introduction
 
 This is my fork of [Arch-Setup-Script](https://github.com/tommytran732/Arch-Setup-Script), a collection of **scripts** made in order to boostrap a basic **Arch Linux** environment with **automated snapshots** with Snapper, recommended **security** measures, and optional **encryption** with LUKS.
 
 This fork focuses on editing, in order to create a system that suits your needs. (Feel free to fork and edit the repo; before cloning to the installation media.)
+
+Furthermore, I added some common [utility scripts](/utils/).
 
 ## How does it work?
 
