@@ -70,9 +70,9 @@ Also, these subfolders in `$HOME` (`~/xxx`) will be subvolumed, to enable `$HOME
 ```sh
 COW_PATHS=(
     ".var"
-    # "Downloads"
     ".local/share/Steam"
     ".local/share/containers"
+    # "Downloads"
     # ".local/share/Trash"
 )
 
@@ -81,3 +81,7 @@ NOCOW_PATHS=(
     "VirtualBox VMs"
 )
 ```
+
+## Testing in VM (virt-manager / qemu)
+
+As far as I have tested, UEFI needs to be enabled. Also, installing `spice-vdagent` is helpful.
