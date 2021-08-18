@@ -1,10 +1,10 @@
 #!/bin/bash
 
-kernel=         # linux
+kernel=         # linux, linux-zen, linux-hardened; for example
 microcode=      # amd-ucode or intel-ucode
 hostname=       # any random makeup names
 # locale=en_US  # uncomment this, if you want en_US; or en_GB is nice for metric units
-kblayout=   # Can be omitted
+kblayout=       # Can be omitted
 # LC_MONETARY=  # "en_US.UTF-8 UTF-8"   # Override en_GB to en_US here, for US dollar
 
 if [ -z "$hostname" ]; then

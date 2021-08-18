@@ -34,10 +34,6 @@ mkdir /.snapshots
 mount -a
 chmod 750 /.snapshots
 
-if [ -z "$BOOTLOADER_ID" ]; then
-    read -r -p "Please choose a bootloader-id: " BOOTLOADER_ID
-fi
-
 if [ -z "$BOOT_TARGET" ]; then
     read -r -p "Please choose target: " BOOT_TARGET
 fi
