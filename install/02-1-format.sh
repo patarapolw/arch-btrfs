@@ -23,19 +23,23 @@ btrfs subvolume create /mnt/@/.snapshots
 mkdir -p /mnt/@/.snapshots/1
 btrfs subvolume create /mnt/@/.snapshots/1/snapshot
 
-for vol in home root
+COW_VOLS=(home root boot srv cryptkey var/log var/crash var/spool var/lib/docker var/lib/containers)
+NOCOW_VOLS=(var/tmp var/cache var/lib/libvirt/images)
+
+elem_in() {
+    local e m="$1"; shift
+    for e in "$@"; do [[ "$m" == "$e" ]] && return 0; done
+    return 1
+}
+
+for vol in "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
 do
     btrfs subvolume create /mnt/@/${vol//\//_}
     mkdir -p /mnt/$vol
-done
 
-VAR_VOLS=(var/log var/crash var/cache var/tmp var/spool var/lib/libvirt/images var/lib/docker var/lib/containers)
-
-for vol in boot srv cryptkey ${VAR_VOLS[*]}
-do
-    btrfs subvolume create /mnt/@/${vol//\//_}
-    chattr +C /mnt/@/${vol//\//_}
-    mkdir -p /mnt/$vol
+    if elem_in "$vol" "${NOCOW_VOLS[@]}"; then
+        chattr +C /mnt/@/${vol//\//_}
+    fi
 done
 
 btrfs subvolume set-default "$(btrfs subvolume list /mnt | grep "@/.snapshots/1/snapshot" | grep -oP '(?<=ID )[0-9]+')" /mnt
@@ -59,16 +63,10 @@ echo "Mounting the newly created subvolumes."
 
 mount -o ssd,noatime,space_cache,compress=zstd:15 $BTRFS /mnt
 
-for vol in home root boot .snapshots srv
+for vol in .snapshots "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
 do
     mkdir -p /mnt/$vol
     mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
-done
-
-for vol in cryptkey ${VAR_VOLS[*]}
-do
-    mkdir -p /mnt/$vol
-    mount -o ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,nodatacow,subvol=@/${vol//\//_} $BTRFS /mnt/$vol
 done
 
 mkdir -p /mnt/boot/efi

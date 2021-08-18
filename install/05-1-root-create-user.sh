@@ -22,26 +22,47 @@ passwd $USER
 #
 # As for how to rollback, see https://github.com/openSUSE/snapper/issues/664
 #
-NOSNAPSHOT_PATHS=(
-    ".cache"
+
+COW_PATHS=(
     ".var"
     "Downloads"
     ".local/share/Steam"
     ".local/share/containers"
-    # ".local/share/Trash"
+    ".local/share/Trash"
 )
+
+NOCOW_PATHS=(
+    ".cache"
+    "VirtualBox VMs"
+)
+
+elem_in() {
+    local e m="$1"; shift
+    for e in "$@"; do [[ "$m" == "$e" ]] && return 0; done
+    return 1
+}
+
 mount $BTRFS -o subvolid=5 /mnt
 
-for vol in ${NOSNAPSHOT_PATHS[*]}
+for vol in "${COW_PATHS[@]}" "${NOCOW_PATHS[@]}"
 do
-    vol=home/$USER/${vol// /\\ }
-    mnt=${vol//\//_}
-    mkdir -p /$vol
-    chown $USER /$vol
-    btrfs sub cr /mnt/@/$mnt
-    chattr +C /mnt/@/$mnt
-    chown $USER /mnt/@/$mnt
-    echo "UUID=$UUID    /$vol    btrfs    rw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@/$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@/$mnt,discard=async,nodatacow    0   0" >> /etc/fstab
+    orig_vol="$vol"
+    vol="home/$USER/$vol"
+
+    mnt="${vol//\//_}"
+    mnt="${mnt// /--}"
+
+    mkdir -p "/$vol"
+    chown "$USER" "/$vol"
+    btrfs sub cr "/mnt/@/$mnt"
+
+    if elem_in "$orig_vol" "${NOCOW_PATHS[@]}"; then
+        chattr +C "/mnt/@/$mnt"
+    fi
+
+    chown $USER "/mnt/@/$mnt"
+
+    printf "UUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@/$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@/%s,discard=async,nodatacow\t0\t0\n\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
 done
 
 umount /mnt
