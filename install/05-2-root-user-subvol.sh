@@ -15,10 +15,10 @@ UUID=$(blkid "$BTRFS" | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)
 
 COW_PATHS=(
     ".var"
-    "Downloads"
     ".local/share/Steam"
     ".local/share/containers"
-    # ".local/share/Trash"
+    # "Downloads"               # Cannot send from Download to Trash
+    # ".local/share/Trash"      # Cannot use Trash at all
 )
 
 NOCOW_PATHS=(
@@ -51,7 +51,7 @@ do
     fi
 
     chown $USER "/mnt/@/$mnt"
-    rsync -axX "/$vol/" "/mnt/@/$mnt/"
+    rsync -axXv "/$vol/" "/mnt/@/$mnt/"
 
     printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@/$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@/%s,discard=async\t0\t0\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
 done
