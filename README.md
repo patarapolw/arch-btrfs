@@ -11,7 +11,7 @@ This fork focuses on editing, in order to create a system that suits your needs.
 1. Download an Arch Linux ISO from [here](https://archlinux.org/download/)
 2. Flash the ISO onto an [USB Flash Drive](https://wiki.archlinux.org/index.php/USB_flash_installation_medium).
 3. Boot the live environment.
-4. Connect to the internet. (You may need to `rfkill unblock wifi`.)
+4. Connect to the internet. (You may need to `rfkill unblock wifi` or `rfkill unblock all`.)
 5. `pacman -Syy git && git clone --depth=1 https://github.com/patarapolw/arch-btrfs/`
    - If `pacman` mirrors are dead, run `reflect --latest 5 --sort rate --save /etc/pacman.d/mirrorlist`
 6. `cd arch-btrfs/install && ls`
@@ -32,7 +32,16 @@ The partition layout I use allows us to replicate the behavior found in openSUSE
 
 1. Separated scripts. Aimed to be editable and customizable.
 2. Encryption is optional. Simply skip `./install/*-encrypt.sh`
-3. Desktop environment by your choice. I've experiment all of GNOME, KDE, XFCE and LXQt.
+3. Desktop environment by your choice.
+   - Tested:
+     - GNOME
+     - KDE Plasma
+     - LXQt
+   - Tested on my machine; to be added to scripts
+     - MATE
+     - Cinnamon
+   - Failed
+     - XFCE
 4. Home folder snapshots. However, this is experimental and might not be perfect. As well as, you cannot rollback home folder directly. (See https://github.com/openSUSE/snapper/issues/664)
 5.  Post-installation utilities and how-tos.
 
