@@ -39,10 +39,8 @@ The partition layout I use allows us to replicate the behavior found in openSUSE
      - GNOME
      - KDE Plasma
      - LXQt
-   - Tested on my machine; to be added to scripts
      - MATE
      - Cinnamon
-   - Failed
      - XFCE
 4. Home folder snapshots. However, this is experimental and might not be perfect. As well as, you cannot rollback home folder directly. (See https://github.com/openSUSE/snapper/issues/664)
 5.  Post-installation utilities and how-tos.
@@ -72,7 +70,7 @@ Also, these subfolders in `$HOME` (`~/xxx`) will be subvolumed, to enable `$HOME
 ```sh
 COW_PATHS=(
     ".var"
-    "Downloads"
+    # "Downloads"
     ".local/share/Steam"
     ".local/share/containers"
     # ".local/share/Trash"

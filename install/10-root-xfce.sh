@@ -1,9 +1,7 @@
 #!/bin/bash
 
-pacman -S xfce4 xfce4-goodies xorg network-manager-applet lightdm lightdm-gtk-greeter pavucontrol
-yay -S menulibre mugshot
+pacman -S xfce4 xfce4-goodies xorg network-manager-applet lightdm lightdm-gtk-greeter bluez pavucontrol pulseaudio
+paru -S menulibre mugshot
 
 systemctl enable lightdm
-# systemctl enable bluetooth
-
-# XFCE is causing problems for me in QEMU, right now...
+systemctl enable bluetooth

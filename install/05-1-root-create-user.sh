@@ -69,5 +69,7 @@ do
     printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@/$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@/%s,discard=async\t0\t0\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
 done
 
+chown -R "$USER" "/home/$USER"
+
 umount /mnt
 mount -a

@@ -21,7 +21,7 @@ if [ -z "$SET" ]; then
 fi
 
 getkey() {
-    echo "$1" | cut -d'=' -f1
+    echo "$1" | sed -e 's/^# *//' | cut -d'=' -f1
 }
 
 while IFS= read -r line; do
