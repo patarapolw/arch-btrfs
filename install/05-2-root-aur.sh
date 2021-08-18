@@ -17,4 +17,4 @@ su - "$USER" <<EOF
 EOF
 
 # fix for paru
-sed -i '/BottomUp/s/^#//' /etc/pacman.conf
+sed -i '/BottomUp/s/^#//' /etc/paru.conf
