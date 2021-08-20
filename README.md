@@ -15,7 +15,7 @@ Furthermore, I added some common [utility scripts](/utils/).
 3. Boot the live environment.
 4. Connect to the internet. (You may need to `rfkill unblock wifi` or `rfkill unblock all`.)
 5. `pacman -Syy git && git clone --depth=1 https://github.com/patarapolw/arch-btrfs/`
-   - If `pacman` mirrors are dead, run `reflect --latest 5 --sort rate --save /etc/pacman.d/mirrorlist`
+   - If `pacman` mirrors are dead, run `man reflector`, and type the first example (probably `reflect --latest 5 --sort rate --save /etc/pacman.d/mirrorlist`)
 6. `cd arch-btrfs/install && ls`
 7. Run the `*.sh` one by one, according to your needs.
 8. You may have to `git clone` again, after `arch-chroot`.
