@@ -21,8 +21,24 @@ btrfs subvolume create /mnt/@/.snapshots
 mkdir -p /mnt/@/.snapshots/1
 btrfs subvolume create /mnt/@/.snapshots/1/snapshot
 
-COW_VOLS=(home root boot srv cryptkey var/log var/crash var/spool var/lib/docker var/lib/containers)
-NOCOW_VOLS=(var/tmp var/cache var/lib/libvirt/images)
+COW_VOLS=(
+    home
+    root
+    boot
+    srv
+    cryptkey
+    var/log
+    var/crash
+    var/spool
+    var/lib/docker
+    var/lib/containers
+)
+NOCOW_VOLS=(
+    var/tmp
+    var/cache
+    var/lib/libvirt/images
+    .swap  # If you need Swapfile, create in this folder
+)
 
 elem_in() {
     local e m="$1"; shift

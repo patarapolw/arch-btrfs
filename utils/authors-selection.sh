@@ -18,7 +18,6 @@ APPS=(
     libinput-gestures
     # https://wiki.archlinux.org/title/Timidity%2B%2B#SoundFonts
     timidity++ freepats-general-midi soundfont-fluid qsynth rosegarden frescobaldi lilypond
-    # rstudio-bin r gcc-fortran qgis
     visual-studio-code-bin
     bitwarden-bin
     chromium
@@ -30,7 +29,7 @@ APPS=(
     go
 )
 
-paru -Syu "$APPS"
+paru -Syu "${APPS[@]}"
 
 sudo usermod -aG libvirt,kvm,audio,input $USER
 
