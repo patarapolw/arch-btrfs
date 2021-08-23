@@ -23,6 +23,7 @@ COW_PATHS=(
 
 NOCOW_PATHS=(
     ".cache"
+    "vmware"
     "VirtualBox VMs"
 )
 
