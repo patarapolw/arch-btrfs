@@ -26,7 +26,7 @@ cat << EOF > $GRUB_INST
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile tpm gzio part_gpt btrfs" --disable-shim-lock $BOOT_TARGET
 EOF
 
-if [ IS_ENCRYPT = "1" ]; then
+if [ "$IS_ENCRYPT" = "1" ]; then
     sed -i '/grub-install /s,btrfs",cryptodisk luks gcry_rijndael gcry_sha256 btrfs",' $GRUB_INST
 fi
 
@@ -52,7 +52,7 @@ rm -rf /usr/local/share/libalpm/scripts
 rm -rf /etc/efi-keys
 rm -rf /etc/secureboot/keys/{db,dbx,KEK,PK}
 
-pacman -S sbsigntools efitools openssl
+pacman -S --needed sbsigntools efitools openssl
 
 mkdir -p /etc/pacman.d/hooks
 mkdir -p /usr/local/share/libalpm/scripts

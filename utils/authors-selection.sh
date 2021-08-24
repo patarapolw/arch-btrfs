@@ -29,7 +29,7 @@ APPS=(
     go
 )
 
-paru -Syu "${APPS[@]}"
+paru -Syu --needed "${APPS[@]}"
 
 sudo usermod -aG libvirt,kvm,audio,input $USER
 

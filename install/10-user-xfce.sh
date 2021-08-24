@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo pacman -S xfce4 xfce4-goodies xorg network-manager-applet lightdm lightdm-gtk-greeter bluez pavucontrol pulseaudio
+sudo pacman -S xfce4 xfce4-goodies xorg network-manager-applet lightdm lightdm-gtk-greeter bluez pavucontrol
 paru -S menulibre mugshot
 
 sudo systemctl enable lightdm
