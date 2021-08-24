@@ -7,7 +7,7 @@ GRUB_INST=/usr/local/bin/my-grub-install.sh
 GRUB_UPDATE=/usr/local/bin/my-grub-update.sh
 
 BOOTLOADER_ID=ARCH
-BOOT_TARGET=/dev/sda
+BOOT_TARGET=/dev/nvme0n1
 # IS_ENCRYPT=1
 
 if [ ! -z $USER ] && [ $USER != "root" ]; then
@@ -21,8 +21,10 @@ fi
 #####
 # GRUB_INST CREATOR
 
-echo "#!/bin/bash" > $GRUB_INST
-echo "grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules=\"normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile tpm gzio part_gpt cryptodisk luks gcry_rijndael gcry_sha256 btrfs\" --disable-shim-lock $BOOT_TARGET" >> $GRUB_INST
+cat << EOF > $GRUB_INST
+#!/bin/bash
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$BOOTLOADER_ID --modules="normal test efi_gop efi_uga search echo linux all_video gfxmenu gfxterm_background gfxterm_menu gfxterm loadenv configfile tpm gzio part_gpt btrfs" --disable-shim-lock $BOOT_TARGET
+EOF
 
 if [ IS_ENCRYPT = "1" ]; then
     sed -i '/grub-install /s,btrfs",cryptodisk luks gcry_rijndael gcry_sha256 btrfs",' $GRUB_INST
@@ -35,20 +37,20 @@ chmod +x $GRUB_INST
 #####
 # GRUB_UPDATE CREATOR
 
-echo "#!/bin/bash" > $GRUB_UPDATE
-# echo $GRUB_INST >> $GRUB_UPDATE
-
-echo "/usr/bin/sbsign --key /etc/efi-keys/DB.key --cert /etc/efi-keys/DB.crt --output /boot/efi/EFI/$BOOTLOADER_ID/grubx64.efi /boot/efi/EFI/$BOOTLOADER_ID/grubx64.efi" >> $GRUB_UPDATE
-echo "/usr/bin/grub-mkconfig -o /boot/grub/grub.cfg" >> $GRUB_UPDATE
+cat << EOF > $GRUB_UPDATE
+#!/bin/bash
+/usr/bin/sbsign --key /etc/efi-keys/DB.key --cert /etc/efi-keys/DB.crt --output /boot/efi/EFI/$BOOTLOADER_ID/grubx64.efi /boot/efi/EFI/$BOOTLOADER_ID/grubx64.efi
+/usr/bin/grub-mkconfig -o /boot/grub/grub.cfg
+EOF
 
 chmod +x $GRUB_UPDATE
 
 #####
 
-# rm -r /etc/pacman.d/hooks
-# rm -r /usr/local/share/libalpm/scripts
-# rm -r /etc/efi-keys
-# rm -r /etc/secureboot/keys/{db,dbx,KEK,PK}
+rm -r /etc/pacman.d/hooks
+rm -r /usr/local/share/libalpm/scripts
+rm -r /etc/efi-keys
+rm -r /etc/secureboot/keys/{db,dbx,KEK,PK}
 
 pacman -S sbsigntools efitools openssl
 
@@ -67,11 +69,11 @@ chmod -R o-rwx /etc/efi-keys
 
 for vmlinuz in $(find /boot -name 'vmlinuz-linux*')
 do
-    sbsign --key db.key --cert db.crt --output $vmlinuz $vmlinuz
+    sbsign --key DB.key --cert DB.crt --output $vmlinuz $vmlinuz
 done
 
 cp /usr/share/libalpm/hooks/90-mkinitcpio-install.hook /etc/pacman.d/hooks/90-mkinitcpio-install.hook
-sed -i 's#Exec = /usr/share/libalpm/scripts/mkinitcpio-install#Exec = /usr/local/share/libalpm/scripts/mkinitcpio-install#g' /etc/pacman.d/hooks/90-mkinitcpio-install-secureboot.hook
+sed -i 's#Exec = /usr/share/libalpm/scripts/mkinitcpio-install#Exec = /usr/local/share/libalpm/scripts/mkinitcpio-install#g' /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 
 cp /usr/share/libalpm/scripts/mkinitcpio-install /usr/local/share/libalpm/scripts/mkinitcpio-install
 sed -i 's#install -Dm644 "${line}" "/boot/vmlinuz-${pkgbase}"#sbsign --key /etc/efi-keys/DB.key --cert /etc/efi-keys/DB.crt --output "/boot/vmlinuz-${pkgbase}" "${line}"#g' /usr/local/share/libalpm/scripts/mkinitcpio-install
