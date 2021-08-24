@@ -47,10 +47,10 @@ chmod +x $GRUB_UPDATE
 
 #####
 
-rm -r /etc/pacman.d/hooks
-rm -r /usr/local/share/libalpm/scripts
-rm -r /etc/efi-keys
-rm -r /etc/secureboot/keys/{db,dbx,KEK,PK}
+rm -rf /etc/pacman.d/hooks
+rm -rf /usr/local/share/libalpm/scripts
+rm -rf /etc/efi-keys
+rm -rf /etc/secureboot/keys/{db,dbx,KEK,PK}
 
 pacman -S sbsigntools efitools openssl
 
@@ -58,6 +58,9 @@ mkdir -p /etc/pacman.d/hooks
 mkdir -p /usr/local/share/libalpm/scripts
 mkdir -p /etc/efi-keys
 mkdir -p /etc/secureboot/keys/{db,dbx,KEK,PK}
+
+# chattr +C /etc/efi-keys
+# chattr +C /etc/secureboot/keys/{db,dbx,KEK,PK}
 
 cd /etc/efi-keys
 curl -L -O https://www.rodsbooks.com/efi-bootloaders/mkkeys.sh
@@ -78,15 +81,21 @@ sed -i 's#Exec = /usr/share/libalpm/scripts/mkinitcpio-install#Exec = /usr/local
 cp /usr/share/libalpm/scripts/mkinitcpio-install /usr/local/share/libalpm/scripts/mkinitcpio-install
 sed -i 's#install -Dm644 "${line}" "/boot/vmlinuz-${pkgbase}"#sbsign --key /etc/efi-keys/DB.key --cert /etc/efi-keys/DB.crt --output "/boot/vmlinuz-${pkgbase}" "${line}"#g' /usr/local/share/libalpm/scripts/mkinitcpio-install
 
-# ln -s /etc/efi-keys/DB.auth /etc/secureboot/keys/db/DB.auth
+ln -s /etc/efi-keys/DB.auth /etc/secureboot/keys/db/DB.auth
 ln -s /etc/efi-keys/KEK.auth /etc/secureboot/keys/KEK/KEK.auth
-ln -s /etc/efi-keys/PK.auth /etc/secureboot/keys/KEK/PK.auth
+ln -s /etc/efi-keys/PK.auth /etc/secureboot/keys/PK/PK.auth
 
 chattr -i /sys/firmware/efi/efivars/{PK,KEK,db}*
 sbkeysync --verbose --pk
 
+# If sbkeysync does not work, see https://www.reddit.com/r/archlinux/comments/m8bmpc/struggling_to_get_secure_boot_working/
+# chattr -i /sys/firmware/efi/efivars/{PK,KEK,db}*
+# efi-updatevar -e -f KEK.esl KEK
+# efi-updatevar -e -f DB.esl db
+# efi-updatevar -f PK.auth PK
+
 chmod -R g-rwx /etc/secureboot
-chmod -R g-rwx /etc/secureboot
+chmod -R o-rwx /etc/secureboot
 
 $GRUB_UPDATE
 
