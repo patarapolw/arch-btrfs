@@ -14,7 +14,7 @@ Furthermore, I added some common [utility scripts](/utils/).
 2. Flash the ISO onto an [USB Flash Drive](https://wiki.archlinux.org/index.php/USB_flash_installation_medium).
 3. Boot the live environment.
 4. Connect to the internet. (You may need to `rfkill unblock wifi` or `rfkill unblock all`.)
-5. `pacman -Syy git && git clone --depth=1 https://github.com/patarapolw/arch-btrfs/`
+5. `pacman -Syy git && git clone -b grub --depth=1 https://github.com/patarapolw/arch-btrfs/`
    - If `pacman` mirrors are dead, run `man reflector`, and type the first example (probably `reflect --latest 5 --sort rate --save /etc/pacman.d/mirrorlist`)
 6. `cd arch-btrfs/install && ls`
 7. Run the `*.sh` one by one, according to your needs.

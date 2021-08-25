@@ -29,7 +29,7 @@ menuentry "Arch Linux - Stable" {
     volume ARCH
     loader /@/boot/vmlinuz-linux
     initrd /@/boot/initramfs-linux.img
-    options "root=PARTUUID=$PARTUUID rw add_efi_memmap rootflags=subvol=@ initrd=@\boot\$microcode.img"
+    options "root=PARTUUID=$PARTUUID rw add_efi_memmap rootflags=subvol=@ initrd=@\boot\$microcode.img lsm=lockdown,yama,apparmor,bpf"
     submenuentry "Boot - fallback" {
         initrd /@/boot/initramfs-linux-fallback.img
     }
