@@ -21,7 +21,6 @@ btrfs subvolume create /mnt/@
 COW_VOLS=(
     home
     root
-    boot
     srv
     cryptkey
     var/log
@@ -64,6 +63,9 @@ do
     mkdir -p "/mnt/$vol"
     mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@${vol//\//_}" "$BTRFS" "/mnt/$vol"
 done
+
+btrfs subvolume create /mnt/@boot
+mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@boot" "$BTRFS" "/mnt/boot"
 
 mkdir -p /mnt/boot/efi
 mount $ESP /mnt/boot/efi
