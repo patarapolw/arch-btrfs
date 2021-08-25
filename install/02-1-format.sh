@@ -45,11 +45,10 @@ elem_in() {
 
 for vol in "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
 do
-    btrfs subvolume create "/mnt/@/${vol//\//_}"
-    mkdir -p "/mnt/$vol"
+    btrfs subvolume create "/mnt/@${vol//\//_}"
 
     if elem_in "$vol" "${NOCOW_VOLS[@]}"; then
-        chattr +C "/mnt/@/${vol//\//_}"
+        chattr +C "/mnt/@${vol//\//_}"
     fi
 done
 
@@ -63,7 +62,7 @@ mount -o ssd,noatime,space_cache,compress=zstd:15 "$BTRFS" /mnt
 for vol in "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
 do
     mkdir -p "/mnt/$vol"
-    mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@/${vol//\//_}" "$BTRFS" "/mnt/$vol"
+    mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@${vol//\//_}" "$BTRFS" "/mnt/$vol"
 done
 
 mkdir -p /mnt/boot/efi

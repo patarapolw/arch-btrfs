@@ -6,7 +6,7 @@ paru -S lightdm-slick-greeter lightdm-settings
 sudo systemctl enable lightdm
 sudo systemctl enable bluetooth
 
-FILE=/etc/lightdm/lightdm.conf
+export FILE=/etc/lightdm/lightdm.conf
 TMP=lightdm.conf
 HEADER='[Seat:*]' SET='greeter-session=lightdm-slick-greeter' ./toml-editor.sh > /tmp/$TMP
 sudo mv /tmp/$TMP $FILE

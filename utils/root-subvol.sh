@@ -31,15 +31,15 @@ do
     mnt="${mnt// /--}"
 
     mkdir -p "/$vol"
-    btrfs sub cr "/mnt/@/$mnt"
+    btrfs sub cr "/mnt/@$mnt"
 
     if elem_in "$orig_vol" "${NOCOW_PATHS[@]}"; then
-        chattr +C "/mnt/@/$mnt"
+        chattr +C "/mnt/@$mnt"
     fi
 
-    rsync -axXv "/$vol/" "/mnt/@/$mnt/"
+    rsync -axX "/$vol/" "/mnt/@$mnt/"
 
-    printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@/$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@/%s,discard=async\t0\t0\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
+    printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/@%s,discard=async\t0\t0\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
 done
 
 umount /mnt

@@ -18,7 +18,8 @@ if [ -z "$microcode" ]; then
     fi
 fi
 
-PARTUUID=$(sudo blkid "$BTRFS" | grep -oP '(?<=PARTUUID=")([^"]+)' | head -n 1)
+UUID=$(sudo blkid "$BTRFS" | grep -oP '(?<= UUID=")([^"]+)' | head -n 1)
+PARTUUID=$(sudo blkid "$BTRFS" | grep -oP '(?<= PARTUUID=")([^"]+)' | head -n 1)
 
 paru -S refind-btrfs
 
@@ -26,7 +27,7 @@ sudo cat << EOF >> /boot/efi/EFI/refind/refind.conf
 
 menuentry "Arch Linux - Stable" {
     icon /EFI/refind/icons/os_arch.png
-    volume ARCH
+    volume $UUID
     loader /@/boot/vmlinuz-linux
     initrd /@/boot/initramfs-linux.img
     options "root=PARTUUID=$PARTUUID rw add_efi_memmap rootflags=subvol=@ initrd=@\boot\$microcode.img lsm=lockdown,yama,apparmor,bpf"
@@ -39,4 +40,5 @@ menuentry "Arch Linux - Stable" {
 }
 EOF
 
-refind-btrfs
+sudo refind-btrfs
+sudo mv /boot/refind_linux.conf /boot/refind_linux.conf.old
