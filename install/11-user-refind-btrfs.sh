@@ -25,7 +25,7 @@ paru -S refind-btrfs
 
 sudo cat << EOF >> /boot/efi/EFI/refind/refind.conf
 
-menuentry "Arch Linux - Stable" {
+menuentry "Arch Linux" {
     icon /EFI/refind/icons/os_arch.png
     volume $UUID
     loader /@/boot/vmlinuz-linux
