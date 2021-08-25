@@ -1,7 +1,12 @@
 #!/bin/bash
 
-sudo pacman -S xfce4 xfce4-goodies xorg network-manager-applet lightdm lightdm-gtk-greeter bluez pavucontrol
-paru -S menulibre mugshot
+sudo pacman -S --needed xfce4 xfce4-goodies xorg network-manager-applet lightdm bluez pavucontrol pulseaudio
+paru -S menulibre mugshot lightdm-slick-greeter lightdm-settings
 
 sudo systemctl enable lightdm
 sudo systemctl enable bluetooth
+
+FILE=/etc/lightdm/lightdm.conf
+TMP=lightdm.conf
+HEADER='[Seat:*]' SET='greeter-session=lightdm-slick-greeter' ./toml-editor.sh > /tmp/$TMP
+sudo mv /tmp/$TMP $FILE

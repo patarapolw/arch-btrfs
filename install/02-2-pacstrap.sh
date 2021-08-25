@@ -55,16 +55,11 @@ fi
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel "${kernel}" "${kernel}-firmware" "${microcode}" grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reflector snap-pac snap-sync noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git rsync zsh zsh-completions
-
-echo "Installing curl, which is needed in some of the steps."
-pacman -Sy curl
+pacstrap /mnt base base-devel "${kernel}" "${kernel}-firmware" "${microcode}" refind snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reflector snap-pac noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git rsync zsh zsh-completions
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."
 genfstab -U /mnt >> /mnt/etc/fstab
-
-sed -i -E '/subvol=\/@\/.snapshots\/1\/snapshot/s/,subvol.+/ 0 0/g' /mnt/etc/fstab
 mount -a /mnt
 
 # Setting hostname.
@@ -94,26 +89,7 @@ fi
 # Configuring /etc/mkinitcpio.conf
 sed -i '/COMPRESSION="zstd"/s/^#//g' /mnt/etc/mkinitcpio.conf
 
-echo "" >> /mnt/etc/default/grub
-echo -e "# Booting with BTRFS subvolume\nGRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION=true" >> /mnt/etc/default/grub
-
 sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ lsm=lockdown,yama,apparmor,bpf"/g' /mnt/etc/default/grub
-sed -i '/GRUB_DISABLE_RECOVERY=/s/false/true/g' /mnt/etc/default/grub
-
-sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/10_linux
-sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/20_linux_xen
-
-# Enabling CPU Mitigations
-curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/default/grub.d/40_cpu_mitigations.cfg >> /mnt/etc/grub.d/40_cpu_mitigations
-
-# Distrusting the CPU
-curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/default/grub.d/40_distrust_cpu.cfg >> /mnt/etc/grub.d/40_distrust_cpu
-
-# Enabling IOMMU
-curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/default/grub.d/40_enable_iommu.cfg >> /mnt/etc/grub.d/40_enable_iommu
-
-# Setting GRUB configuration file permissions
-chmod 755 /mnt/etc/grub.d/*
 
 # Blacklisting kernel modules
 curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/modprobe.d/30_security-misc.conf >> /mnt/etc/modprobe.d/30_security-misc.conf
