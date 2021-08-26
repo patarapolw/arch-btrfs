@@ -2,7 +2,7 @@
 
 APPS=(
     # copyq
-    conky
+    conky ntp
     # https://wiki.archlinux.org/title/Fcitx#Desktop_Environment_Autostart
     fcitx fcitx-configtool fcitx-anthy fcitx-cloudpinyin fcitx-table-other
     fonts-tlwg ttf-sipa-dip ttf-th-sarabun-new ttf-droid
@@ -19,7 +19,7 @@ APPS=(
     visual-studio-code-bin
     bitwarden-bin
     chromium
-    gnome-disk-utility gnome-keyring transmission-gtk baobab
+    gnome-disk-utility gnome-keyring transmission-gtk baobab gparted
     discord steam playonlinux
     libreoffice-fresh
     python-pip
