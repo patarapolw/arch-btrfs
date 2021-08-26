@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo pacman -S cinnamon blueberry gnome-terminal gnome-screenshot xorg lightdm
-paru -S lightdm-slick-greeter
+paru -S lightdm-slick-greeter lightdm-settings numlockx
 
 sudo systemctl enable lightdm
 sudo systemctl enable bluetooth

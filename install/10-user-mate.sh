@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo pacman -S mate mate-extra mate-media blueman xorg network-manager-applet lightdm
-paru -S lightdm-slick-greeter
+paru -S lightdm-slick-greeter lightdm-settings numlockx
 
 sudo systemctl enable lightdm
 sudo systemctl enable bluetooth
