@@ -37,4 +37,5 @@ do
     ln -s "$STATIC_MOUNT/$vol" /home/$USER
 done
 
-chown -R $USER $STATIC_MOUNT 2>/dev/null
+chown -R $USER $STATIC_MOUNT/* 2>/dev/null
+chown -R root $STATIC_MOUNT/@/.snapshot
