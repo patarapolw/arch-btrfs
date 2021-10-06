@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 USER=polv
-STATIC_MOUNT=/media/home
+STATIC_MOUNT=/media/.home
 
 if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to create: " USER
@@ -28,10 +28,13 @@ STATIC_FOLDERS=(
     "VirtualBox VMs"
 )
 
+mkdir -p /home/$USER
+
 for vol in "${STATIC_FOLDERS[@]}"
 do
     mkdir -p "$STATIC_MOUNT/$vol"
-    ln -s "$STATIC_MOUNT/$vol" "$HOME/$vol"
+    rm -r "$HOME/$vol"
+    ln -s "$STATIC_MOUNT/$vol" /home/$USER
 done
 
 # chown -R $USER $STATIC_MOUNT 2>/dev/null

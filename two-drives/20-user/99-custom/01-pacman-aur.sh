@@ -51,6 +51,8 @@ APPS=(
 
     python-poetry
     python-pipenv
+
+    gparted
 )
 
 paru -Syu --needed "${APPS[@]}"
