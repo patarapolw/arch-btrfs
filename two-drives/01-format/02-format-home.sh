@@ -14,4 +14,4 @@ mount "$BTRFS" /mnt/media/.home
 btrfs sub cr /mnt/media/.home/home
 
 mkdir -p /mnt/home
-mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=home" "$BTRFS" "/mnt/home"
+mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=.home" "$BTRFS" "/mnt/home"

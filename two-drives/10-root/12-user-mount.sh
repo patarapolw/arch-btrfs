@@ -1,40 +1,52 @@
 #!/bin/bash -e
 
-USER=polv
-STATIC_MOUNT=/media/.home
+USER=
+BTRFS=      # /dev/sda2 or /dev/vda2
 
 if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to create: " USER
 fi
 
-if [ -z "$STATIC_MOUNT" ]; then
-    read -r -p "Please choose static mount: " STATIC_MOUNT
+if [ -z "$BTRFS" ]; then
+    read -r -p "Please choose BTRFS partiion: " BTRFS
 fi
 
-STATIC_FOLDERS=(
-    # Standard folders
-    "Desktop"
-    "Documents"
-    "Downloads"
-    "Music"
-    "Pictures"
-    "Public"
-    "Videos"
+UUID=$(blkid "$BTRFS" | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)
 
-    # Additional folders
-    "NextCloud"
-    "Projects"
-    "vmware"
-    "VirtualBox VMs"
+COW_PATHS=(
 )
 
-mkdir -p /home/$USER
+NOCOW_PATHS=(
+)
 
-for vol in "${STATIC_FOLDERS[@]}"
+elem_in() {
+    local e m="$1"; shift
+    for e in "$@"; do [[ "$m" == "$e" ]] && return 0; done
+    return 1
+}
+
+mount $BTRFS -o subvolid=5 /mnt
+
+for vol in "${COW_PATHS[@]}" "${NOCOW_PATHS[@]}"
 do
-    mkdir -p "$STATIC_MOUNT/$vol"
-    rm -r "$HOME/$vol"
-    ln -s "$STATIC_MOUNT/$vol" /home/$USER
+    mnt="${vol//\//_}"
+    mnt="${mnt// /--}"
+
+    mkdir -p "/$vol"
+    chown "$USER" "/$vol"
+    btrfs sub cr "/mnt/$mnt"
+
+    if elem_in "$vol" "${NOCOW_PATHS[@]}"; then
+        chattr +C "/mnt/$mnt"
+    fi
+
+    chown $USER "/mnt/$mnt"
+    rsync -axXv "/home/$USER/$vol/" "/mnt/$mnt/"
+
+    printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/%s,discard=async\t0\t0\n" "/home/$USER/${vol// /\\040}" "$mnt" >> /etc/fstab
 done
 
-# chown -R $USER $STATIC_MOUNT 2>/dev/null
+chown -R "$USER" "/home/$USER"
+
+umount /mnt
+mount -a
