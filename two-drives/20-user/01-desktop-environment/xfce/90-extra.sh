@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-pacman -S nemo libwnck
+pacman -S nemo nemo-python libwnck

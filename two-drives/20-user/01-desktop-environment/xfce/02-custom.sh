@@ -18,6 +18,7 @@ EOF
 sudo cat <<EOF > /usr/local/bin/folder-thumbnailer
 #!/bin/bash
 
+convert -thumbnail "$1" "$2/.thumbnail" "$3" 1>/dev/null 2>&1 ||\
 convert -thumbnail "$1" "$2/folder.jpg" "$3" 1>/dev/null 2>&1 ||\
 convert -thumbnail "$1" "$2/.folder.jpg" "$3" 1>/dev/null 2>&1 ||\
 convert -thumbnail "$1" "$2/folder.png" "$3" 1>/dev/null 2>&1 ||\
