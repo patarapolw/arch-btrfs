@@ -94,7 +94,7 @@ PKGS=(
     # ntfs-3g
 )
 
-pacstrap /mnt "$PKGS"
+pacstrap /mnt "${PKGS[@]}"
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."

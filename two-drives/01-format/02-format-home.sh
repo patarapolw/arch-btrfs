@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 BTRFS=  # real partition e.g. /dev/vda2, /dev/sda2, or /dev/mapper/cryptroot
-ESP=    # /dev/vda1, /dev/sda1
 LABEL=LINUX_HOME
 
 if [ -z "$BTRFS" ]; then

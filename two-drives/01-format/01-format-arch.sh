@@ -20,6 +20,7 @@ echo "Creating BTRFS subvolumes."
 btrfs subvolume create /mnt/@
 
 COW_VOLS=(
+    boot
     root
     srv
     var/log
@@ -50,7 +51,6 @@ do
     fi
 done
 
-btrfs subvolume set-default 256 /mnt
 umount /mnt
 
 echo "Mounting the newly created subvolumes."
@@ -62,9 +62,6 @@ do
     mkdir -p "/mnt/$vol"
     mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@${vol//\//_}" "$BTRFS" "/mnt/$vol"
 done
-
-btrfs subvolume create /mnt/@boot
-mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@boot" "$BTRFS" "/mnt/boot"
 
 mkdir -p /mnt/boot/efi
 mount $ESP /mnt/boot/efi
