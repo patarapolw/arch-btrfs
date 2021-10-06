@@ -17,13 +17,14 @@ COW_PATHS=(
     # Standard folders
     "Desktop"
     "Documents"
-    "Download"
+    "Downloads"
     "Music"
     "Pictures"
     "Public"
     "Videos"
 
     # Additional folders
+    "NextCloud"
     "Projects"
 )
 
@@ -55,9 +56,9 @@ do
     fi
 
     chown $USER "/mnt/$mnt"
-    rsync -axXv "/$vol/" "/mnt/$mnt/"
+    rsync -axXv "/home/$USER/$vol/" "/mnt/$mnt/"
 
-    printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "@$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/%s,discard=async\t0\t0\n" "${vol// /\\040}" "$mnt" >> /etc/fstab
+    printf "\nUUID=$UUID\t/%s\tbtrfs\trw,noatime,compress=zstd:15,ssd,space_cache,subvolid=$(btrfs sub list / | grep "$mnt" | grep -oP '(?<=ID )[0-9]+'),subvol=/%s,discard=async\t0\t0\n" "/home/$USER/${vol// /\\040}" "$mnt" >> /etc/fstab
 done
 
 chown -R "$USER" "/home/$USER"
