@@ -55,7 +55,46 @@ fi
 
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
-pacstrap /mnt base base-devel "${kernel}" "${kernel}-firmware" "${microcode}" refind snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reflector snap-pac noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git rsync zsh zsh-completions
+
+PKGS=(
+    base
+    base-devel
+    "${kernel}"
+    "${kernel}-firmware"
+    "${microcode}"
+
+    # Bootloader
+    grub
+    grub-btrfs
+    efibootmgr
+
+    snapper
+    sudo
+    networkmanager
+    apparmor
+    nano
+    firewalld
+
+    reflector
+    snap-pac
+    git
+    rsync
+
+    # Shell
+    zsh
+    zsh-completions
+
+    # Fonts
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    noto-fonts-extra
+
+    # Probably not needed in the future Linux >=5.15
+    # ntfs-3g
+)
+
+pacstrap /mnt "$PKGS"
 
 # Generating /etc/fstab.
 echo "Generating a new fstab."
