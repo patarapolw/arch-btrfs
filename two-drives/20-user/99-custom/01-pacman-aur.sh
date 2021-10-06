@@ -4,7 +4,6 @@
 
 APPS=(
     # copyq
-    conky
 
     # https://wiki.archlinux.org/title/Fcitx#Desktop_Environment_Autostart
     fcitx fcitx-configtool fcitx-anthy fcitx-cloudpinyin fcitx-table-other
@@ -25,7 +24,6 @@ APPS=(
 
     # https://github.com/bulletmark/libinput-gestures
     libinput-gestures wmctrl xdotool
-    libwnck
 
     # https://wiki.archlinux.org/title/Timidity%2B%2B#SoundFonts
     # timidity++ freepats-general-midi soundfont-fluid qsynth rosegarden frescobaldi lilypond
@@ -33,7 +31,7 @@ APPS=(
     visual-studio-code-bin
     bitwarden
     chromium
-    gnome-disk-utility gnome-keyring
+    gnome-disk-utility
     discord
 
     python-pip
@@ -41,18 +39,13 @@ APPS=(
 
     deno ttf-droid
 
-    openssh
-
     nextcloud-client
     archlinux-artwork
 
     rustup
-    tree
 
     python-poetry
     python-pipenv
-
-    gparted
 )
 
 paru -Syu --needed "${APPS[@]}"

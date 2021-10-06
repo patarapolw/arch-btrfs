@@ -8,10 +8,10 @@ if [ -z "$BTRFS" ]; then
 fi
 
 mkfs.btrfs -f -L "$LABEL" "$BTRFS"
-mkdir -p /mnt/media/.home
-mount "$BTRFS" /mnt/media/.home
+mkdir -p /mnt/media/$LABEL
+mount "$BTRFS" /mnt/media/$LABEL
 
-btrfs sub cr /mnt/media/.home/home
+btrfs sub cr /mnt/media/$LABEL/@
 
 mkdir -p /mnt/home
-mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=.home" "$BTRFS" "/mnt/home"
+mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@" "$BTRFS" "/mnt/home"

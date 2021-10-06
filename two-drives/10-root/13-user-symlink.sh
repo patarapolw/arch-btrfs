@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-USER=polv
-STATIC_MOUNT=/media/.home
+USER=
+STATIC_MOUNT=/media/HOME
 
 if [ -z "$USER" ]; then
     read -r -p "Please choose an admin user to create: " USER
