@@ -22,7 +22,7 @@ STATIC_FOLDERS=(
     "Videos"
 
     # Additional folders
-    "NextCloud"
+    "Nextcloud"
     "Projects"
     "vmware"
     "VirtualBox VMs"
