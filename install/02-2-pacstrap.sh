@@ -89,6 +89,15 @@ fi
 # Configuring /etc/mkinitcpio.conf
 sed -i '/COMPRESSION="zstd"/s/^#//g' /mnt/etc/mkinitcpio.conf
 
+echo "" >> /mnt/etc/default/grub
+echo -e "# Booting with BTRFS subvolume\nGRUB_BTRFS_OVERRIDE_BOOT_PARTITION_DETECTION=true" >> /mnt/etc/default/grub
+
+sed -i '/GRUB_CMDLINE_LINUX_DEFAULT=/s/"$/ lsm=lockdown,yama,apparmor,bpf"/g' /mnt/etc/default/grub
+sed -i '/GRUB_DISABLE_RECOVERY=/s/false/true/g' /mnt/etc/default/grub
+
+sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/10_linux
+sed -i 's#rootflags=subvol=${rootsubvol}##g' /mnt/etc/grub.d/20_linux_xen
+
 # Blacklisting kernel modules
 curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/modprobe.d/30_security-misc.conf >> /mnt/etc/modprobe.d/30_security-misc.conf
 chmod 600 /mnt/etc/modprobe.d/*
