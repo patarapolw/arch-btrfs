@@ -1,8 +1,9 @@
 #!/bin/bash -e
 
-HOME=
-CFG=${CFG:-"$(git rev-parse --show-toplevel)/config.yaml"}
-LABEL=${LABEL:-$(cat $CFG | yq '.mount."/home".label')}
+CFG="$(git rev-parse --show-toplevel)/config.yaml"
+
+HOME=$(yq -r '.mount."/home".device' $CFG)
+LABEL=$(yq -r '.mount."/home".label' $CFG)
 
 if [[ -z $HOME ]]; then
     exit 1

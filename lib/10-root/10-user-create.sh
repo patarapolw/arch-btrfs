@@ -1,9 +1,10 @@
 #!/bin/bash -e
 
-USER=
+CFG="$(git rev-parse --show-toplevel)/config.yaml"
+USER=$(yq -r '.users | to_entries | .[].key | select(. != "root")' $CFG | head -n1 | envsubst)
 
-if [ -z "$USER" ]; then
-    read -r -p "Please choose an admin user to create: " USER
+if [[ -z "$USER" ]]; then
+    exit 1
 fi
 
 # Create user

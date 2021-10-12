@@ -1,14 +1,15 @@
 #!/bin/bash -e
 
-USER=
-BTRFS=      # /dev/sda2 or /dev/vda2
+CFG="$(git rev-parse --show-toplevel)/config.yaml"
+USER=$(yq -r '.users | to_entries | .[].key | select(. != "root")' $CFG | head -n1 | envsubst)
+BTRFS=$(yq -r '.mount."/".device' $CFG)      # /dev/sda2 or /dev/vda2
 
-if [ -z "$USER" ]; then
-    read -r -p "Please choose an admin user to create: " USER
+if [[ -z "$USER" ]]; then
+    exit 1
 fi
 
-if [ -z "$BTRFS" ]; then
-    read -r -p "Please choose BTRFS partiion: " BTRFS
+if [[ -z "$BTRFS" ]]; then
+    exit 1
 fi
 
 UUID=$(blkid "$BTRFS" | grep -oP '(?<=UUID=")([^"]+)' | head -n 1)

@@ -1,9 +1,10 @@
-#!/bin/zsh -e
+#!/bin/bash -e
 
-BTRFS=  # real partition e.g. /dev/vda2, /dev/sda2, or /dev/mapper/cryptroot
-ESP=    # /dev/vda1, /dev/sda1
-CFG=${CFG:-"$(git rev-parse --show-toplevel)/config.yaml"}
-LABEL=${LABEL:-$(cat $CFG | yq '.mount."/".label')}
+CFG="$(git rev-parse --show-toplevel)/config.yaml"
+
+BTRFS=$(yq -r '.mount."/".device' $CFG)  # real partition e.g. /dev/vda2, /dev/sda2, or /dev/mapper/cryptroot
+ESP=$(yq -r '.mount."/boot/efi".device' $CFG)    # /dev/vda1, /dev/sda1
+LABEL=$(yq -r '.mount."/".label' $CFG)
 
 if [[ -z "$BTRFS" ]]; then
     exit 1
@@ -13,8 +14,8 @@ if [[ -z "$ESP" ]]; then
     exit 1
 fi
 
-mkfs.btrfs ${$(cat $CFG | yq '.mount."/".device'):+"-f"} -L "$LABEL" "$BTRFS"
-mount "$BTRFS" /mnt
+mkfs.btrfs ${$(yq -r '.mount."/".device' $CFG):+"-f"} -L $LABEL $BTRFS
+mount $BTRFS /mnt
 
 echo "Creating BTRFS subvolumes."
 

@@ -1,9 +1,10 @@
 #!/bin/bash -e
 
-TZ=                 # Asia/Bangkok for me. You can search with tab completion in /usr/share/zoneinfo
+CFG="$(git rev-parse --show-toplevel)/config.yaml"
+TZ=$(yq -r '.config.TZ' $CFG)                 # Asia/Bangkok for me. You can search with tab completion in /usr/share/zoneinfo
 # IS_ENCRYPT=1      # If you need encryption modules to be installed for GRUB
 
-if [ -z "$TZ" ]; then
+if [[ -z "$TZ" ]]; then
     TZ="$(curl -s http://ip-api.com/line?fields=timezone)"
 fi
 

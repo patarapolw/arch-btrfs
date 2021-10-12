@@ -1,14 +1,14 @@
 #!/bin/bash -e
 
-USER=
+USER=$(yq -r '.users | to_entries | .[].key | select(. != "root")' $CFG | head -n1 | envsubst)
 STATIC_MOUNT=/media/HOME
 
-if [ -z "$USER" ]; then
-    read -r -p "Please choose an admin user to create: " USER
+if [[ -z "$USER" ]]; then
+    exit 1
 fi
 
-if [ -z "$STATIC_MOUNT" ]; then
-    read -r -p "Please choose static mount: " STATIC_MOUNT
+if [[ -z "$STATIC_MOUNT" ]]; then
+    exit 1
 fi
 
 STATIC_FOLDERS=(
