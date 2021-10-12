@@ -2,9 +2,14 @@
 
 TZ=                 # Asia/Bangkok for me. You can search with tab completion in /usr/share/zoneinfo
 # IS_ENCRYPT=1      # If you need encryption modules to be installed for GRUB
+BOOT_TARGET=
 
 if [ -z "$TZ" ]; then
     TZ="$(curl -s http://ip-api.com/line?fields=timezone)"
+fi
+
+if [ -z "$BOOT_TARGET" ]; then
+    read -r -p "Please choose target: " BOOT_TARGET
 fi
 
 # Setting up timezone.
@@ -29,11 +34,6 @@ btrfs subvolume delete /.snapshots
 mkdir /.snapshots
 mount -a
 chmod 750 /.snapshots
-
-if [ -z "$BOOT_TARGET" ]; then
-    read -r -p "Please choose target: " BOOT_TARGET
-fi
-
 
 # Installing GRUB.
 echo "Installing GRUB on /boot."

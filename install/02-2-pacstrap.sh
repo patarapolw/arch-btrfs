@@ -50,9 +50,6 @@ if [ -z "$kernel" ]; then
     esac
 fi
 
-# Optional. Pacman mirror fixing
-# reflect --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
-
 # Pacstrap (setting up a base sytem onto the new root).
 echo "Installing the base system (it may take a while)."
 pacstrap /mnt base base-devel "${kernel}" "${kernel}-firmware" "${microcode}" refind grub grub-btrfs snapper efibootmgr sudo networkmanager apparmor nano firewalld ntfs-3g reflector snap-pac noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra git rsync zsh zsh-completions
