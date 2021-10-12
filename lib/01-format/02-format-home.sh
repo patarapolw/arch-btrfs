@@ -1,17 +1,18 @@
 #!/bin/bash -e
 
-BTRFS=  # real partition e.g. /dev/vda2, /dev/sda2, or /dev/mapper/cryptroot
-LABEL=HOME
+HOME=
+CFG=${CFG:-"$(git rev-parse --show-toplevel)/config.yaml"}
+LABEL=${LABEL:-$(cat $CFG | yq '.mount."/home".label')}
 
-if [ -z "$BTRFS" ]; then
-    read -r -p "Please choose the partition to format to BTRFS: " BTRFS
+if [[ -z $HOME ]]; then
+    exit 1
 fi
 
-mkfs.btrfs -f -L "$LABEL" "$BTRFS"
+mkfs.btrfs -f -L $LABEL $HOME
 mkdir -p /mnt/media/$LABEL
-mount "$BTRFS" /mnt/media/$LABEL
+mount $HOME /mnt/media/$LABEL
 
 btrfs sub cr /mnt/media/$LABEL/@
 
 mkdir -p /mnt/home
-mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@" "$BTRFS" "/mnt/home"
+mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@" $HOME "/mnt/home"

@@ -1,40 +1,24 @@
-#!/bin/bash -e
+#!/bin/zsh -e
 
 BTRFS=  # real partition e.g. /dev/vda2, /dev/sda2, or /dev/mapper/cryptroot
 ESP=    # /dev/vda1, /dev/sda1
-LABEL=ARCH
+CFG=${CFG:-"$(git rev-parse --show-toplevel)/config.yaml"}
+LABEL=${LABEL:-$(cat $CFG | yq '.mount."/".label')}
 
-if [ -z "$BTRFS" ]; then
-    read -r -p "Please choose the partition to format to BTRFS: " BTRFS
+if [[ -z "$BTRFS" ]]; then
+    exit 1
 fi
 
-if [ -z "$ESP" ]; then
-    read -r -p "Please choose the EFI partition: " ESP
+if [[ -z "$ESP" ]]; then
+    exit 1
 fi
 
-mkfs.btrfs -f -L "$LABEL" "$BTRFS"
+mkfs.btrfs ${$(cat $CFG | yq '.mount."/".device'):+"-f"} -L "$LABEL" "$BTRFS"
 mount "$BTRFS" /mnt
 
 echo "Creating BTRFS subvolumes."
 
 btrfs subvolume create /mnt/@
-
-COW_VOLS=(
-    boot
-    root
-    srv
-    var/log
-    var/crash
-    var/spool
-    var/lib/docker
-    var/lib/containers
-)
-NOCOW_VOLS=(
-    var/tmp
-    var/cache
-    var/lib/libvirt/images
-    .swap  # If you need Swapfile, create in this folder
-)
 
 elem_in() {
     local e m="$1"; shift
@@ -42,11 +26,11 @@ elem_in() {
     return 1
 }
 
-for vol in "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
+for vol in $(cat $CFG | yq '.mount."/".subvolmes.cow[],.mount."/".subvolmes.nocow[]')
 do
     btrfs subvolume create "/mnt/@${vol//\//_}"
 
-    if elem_in "$vol" "${NOCOW_VOLS[@]}"; then
+    if elem_in $vol $(cat $CFG | yq '.mount."/".subvolmes.nocow[]'); then
         chattr +C "/mnt/@${vol//\//_}"
     fi
 done
@@ -75,10 +59,10 @@ echo "Mounting the newly created subvolumes."
 
 mount -o ssd,noatime,space_cache,compress=zstd:15 "$BTRFS" /mnt
 
-for vol in "${COW_VOLS[@]}" "${NOCOW_VOLS[@]}"
+for vol in $(cat $CFG | yq '.mount."/".subvolmes.cow[],.mount."/".subvolmes.nocow[]')
 do
     mkdir -p "/mnt/$vol"
-    mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@${vol//\//_}" "$BTRFS" "/mnt/$vol"
+    mount -o "ssd,noatime,space_cache,autodefrag,compress=zstd:15,discard=async,subvol=@${vol//\//_}" $BTRFS "/mnt/$vol"
 done
 
 mkdir -p /mnt/boot/efi
