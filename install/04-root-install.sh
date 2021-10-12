@@ -30,11 +30,6 @@ mkinitcpio -P
 snapper --no-dbus -c root create-config /
 snapper --no-dbus -c home create-config /home
 
-btrfs subvolume delete /.snapshots
-mkdir /.snapshots
-mount -a
-chmod 750 /.snapshots
-
 # Installing GRUB.
 echo "Installing GRUB on /boot."
 
