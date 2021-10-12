@@ -1,7 +1,7 @@
 mount:
   /boot/efi:
     device:     # required, such as /dev/sda1
-    label: BOOT
+    format: false
   /:
     device:     # required, such as /dev/sda2, /dev/vda2, /dev/mapper/cryptroot
     label: ARCH
