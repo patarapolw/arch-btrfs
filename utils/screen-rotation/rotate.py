@@ -7,6 +7,12 @@ import sys
 from subprocess import check_call, check_output
 from glob import glob
 
+# Specific to HP Pavillion x360 laptops
+TOUCHSCREENS = ["ELAN2514:00 04F3:23DD"]
+TOUCHPADS = []
+DISABLE_TOUCHPADS = False
+SENSITIVITY = 7.0  # (m^2 / s) sensibility, gravity trigger
+
 
 def bdopen(fname):
     return open(op.join(basedir, fname))
@@ -29,54 +35,50 @@ devices = check_output(
 ).splitlines()
 
 touchscreen_names = ["touchscreen", "wacom"]
-touchscreens = [i for i in devices if any(j in i.lower() for j in touchscreen_names)]
-# Specific to HP Pavillion x360 laptops
-touchscreens.append("ELAN2514:00 04F3:23DD")
-
-disable_touchpads = False
+TOUCHSCREENS.extend(
+    i for i in devices if any(j in i.lower() for j in touchscreen_names)
+)
 
 touchpad_names = ["touchpad", "trackpoint", "mouse"]
-touchpads = [i for i in devices if any(j in i.lower() for j in touchpad_names)]
+TOUCHPADS.extend(i for i in devices if any(j in i.lower() for j in touchpad_names))
 
 scale = float(read("in_accel_scale"))
 
-g = 7.0  # (m^2 / s) sensibility, gravity trigger
-
-STATES = [
+states = [
     {
         "rot": "normal",
         "coord": "1 0 0 0 1 0 0 0 1",
         "touchpad": "enable",
-        "check": lambda x, y: y <= -g,
+        "check": lambda x, y: y <= -SENSITIVITY,
     },
     {
         "rot": "inverted",
         "coord": "-1 0 1 0 -1 1 0 0 1",
         "touchpad": "disable",
-        "check": lambda x, y: y >= g,
+        "check": lambda x, y: y >= SENSITIVITY,
     },
     {
         "rot": "left",
         "coord": "0 -1 1 1 0 0 0 0 1",
         "touchpad": "disable",
-        "check": lambda x, y: x >= g,
+        "check": lambda x, y: x >= SENSITIVITY,
     },
     {
         "rot": "right",
         "coord": "0 1 0 -1 0 1 0 0 1",
         "touchpad": "disable",
-        "check": lambda x, y: x <= -g,
+        "check": lambda x, y: x <= -SENSITIVITY,
     },
 ]
 
 
-def rotate(state):
-    s = STATES[state]
+def rotate(i):
+    s = states[i]
 
     check_call(["xrandr", "-o", s["rot"]])
 
-    for dev in touchscreens if disable_touchpads else (touchscreens + touchpads):
-        check_output(
+    for dev in TOUCHSCREENS if DISABLE_TOUCHPADS else (TOUCHSCREENS + TOUCHPADS):
+        check_call(
             [
                 "xinput",
                 "set-prop",
@@ -86,8 +88,8 @@ def rotate(state):
             + s["coord"].split()
         )
 
-    if disable_touchpads:
-        for dev in touchpads:
+    if DISABLE_TOUCHPADS:
+        for dev in TOUCHPADS:
             check_call(["xinput", s["touchpad"], dev])
 
 
@@ -109,7 +111,7 @@ if __name__ == "__main__":
         for i in range(4):
             if i == current_state:
                 continue
-            if STATES[i]["check"](x, y):
+            if states[i]["check"](x, y):
                 current_state = i
                 rotate(i)
                 break
