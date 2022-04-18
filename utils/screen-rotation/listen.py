@@ -12,7 +12,7 @@ class OnscreenKeyboard:
     is_shown = False
     process: Optional[Popen] = None
 
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     def _hide(self):
@@ -38,9 +38,6 @@ mode = None
 
 while True:
     screen = check_output(["xrandr", "--current"], encoding="utf-8").splitlines()[1]
-    if not screen:
-        sys.exit(1)
-
     new_mode = screen[: screen.index("(")].split(" ")[-2]
     if not new_mode:
         sys.exit(1)
